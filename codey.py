@@ -113,17 +113,25 @@ class window(Gtk.ApplicationWindow):
 		self.title.set_label('Codey')
 		self.headerBar.set_title_widget(self.title)
 
+		self.layoutBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 20)
+		self.set_child(self.layoutBox)
+
+		self.borderBox = Gtk.Box()
+		self.layoutBox.append(self.borderBox)
+		
 		#Setup general window Structure
 		self.mainBox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 20)
-		self.set_child(self.mainBox)
+		self.layoutBox.append(self.mainBox)
 
+		self.borderBox = Gtk.Box()
+		self.layoutBox.append(self.borderBox)
+		
+		self.borderBox = Gtk.Box()
+		self.mainBox.append(self.borderBox)
+		
 		#left side of Window, used for Button etc
-		self.interfaceBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 20)
+		self.interfaceBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 10)
 		self.mainBox.append(self.interfaceBox)
-		self.box1 = Gtk.Box(spacing = 20)
-		self.interfaceBox.append(self.box1)
-		self.box2 = Gtk.Box(spacing = 20)
-		self.interfaceBox.append(self.box2)
 
 		#Scrollable right side of the window for the Code block
 		self.scrolledWindow = Gtk.ScrolledWindow()
@@ -131,6 +139,8 @@ class window(Gtk.ApplicationWindow):
 		self.scrolledWindow.set_hexpand(True)
 		self.mainBox.append(self.scrolledWindow)
 		
+		self.borderBox = Gtk.Box()
+		self.mainBox.append(self.borderBox)
 
 
 		#Populate the Header Bar
@@ -191,14 +201,19 @@ class window(Gtk.ApplicationWindow):
 
 		#Dropdown to choose the file
 		self.fileChooser = Gtk.ComboBoxText()
-		self.box1.append(self.fileChooser)
+		self.interfaceBox.append(self.fileChooser)
 		self.fillSelection()
 		self.fileChooser.connect('changed', self.fileChanged)
 
 		#Button to open the file
-		self.submit = Gtk.Button(label = 'Open')
-		self.submit.connect('clicked', self.submitClicked)
-		self.box2.append(self.submit)
+		self.run = Gtk.Button(label = 'Run')
+		self.run.connect('clicked', self.runClicked)
+		self.interfaceBox.append(self.run)
+		
+		#Button to open the file
+		self.open = Gtk.Button(label = 'Open')
+		self.open.connect('clicked', self.openClicked)
+		self.interfaceBox.append(self.open)
 
 		#displays the code of the opened file
 		self.codeLabel = Gtk.Label()
@@ -237,10 +252,16 @@ class window(Gtk.ApplicationWindow):
 		for entry in files:
 			self.fileChooser.append_text(entry)
 
-	#submits the filechoice
-	def submitClicked(self, widget):
+	#runs the selected file
+	def runClicked(self, widget):
 		file = self.fileChooser.get_active_text()
 		app.openFile(file)
+
+	#open the selected file in default app
+	def openClicked(self, widget):
+		file = self.fileChooser.get_active_text()
+		path = app.readConfig('Target_Path')
+		os.system('gedit ' + path + '/' + file)
 		
 	def onChecked(self, widget):
 		app.setConfig(widget.get_label(), str(widget.get_active()))
@@ -254,7 +275,7 @@ class window(Gtk.ApplicationWindow):
 
 class MyApp(Gtk.Application):
     def __init__(self):
-        super().__init__(application_id='dk.rasmil.Example')#, flags=Gio.ApplicationFlags.FLAGS_NONE)
+        super().__init__(application_id='org.Unicorn.Codey')#, flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     def do_activate(self):
         win = self.props.active_window
