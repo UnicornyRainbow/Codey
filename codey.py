@@ -6,7 +6,8 @@ import webbrowser
 import gi
 import sys
 gi.require_version('Gtk','4.0')
-from gi.repository import Gtk
+gi.require_version('Adw', '1')
+from gi.repository import Gtk, Adw
 
 
 
@@ -94,9 +95,13 @@ class app():
 
 class window(Gtk.ApplicationWindow):
 
-	def __init__(self, **kwargs):
-		super(window, self).__init__(**kwargs)#'Codey', 960, 540, **kwargs)
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)#'Codey', 960, 540, **kwargs)
 
+		app3 = self.get_application()
+		sm = app3.get_style_manager()
+		sm.set_color_scheme(Adw.ColorScheme.PREFER_DARK)
+		
 		#window
 		Gtk.Window.__init__(self, title='Codey')
 		#self.set_border_width(20)
@@ -113,25 +118,17 @@ class window(Gtk.ApplicationWindow):
 		self.title.set_label('Codey')
 		self.headerBar.set_title_widget(self.title)
 
-		self.layoutBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 20)
-		self.set_child(self.layoutBox)
-
-		self.borderBox = Gtk.Box()
-		self.layoutBox.append(self.borderBox)
-		
 		#Setup general window Structure
-		self.mainBox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 20)
-		self.layoutBox.append(self.mainBox)
+		self.mainBox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 40)
+		self.set_child(self.mainBox)
 
-		self.borderBox = Gtk.Box()
-		self.layoutBox.append(self.borderBox)
-		
-		self.borderBox = Gtk.Box()
-		self.mainBox.append(self.borderBox)
-		
 		#left side of Window, used for Button etc
 		self.interfaceBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 10)
 		self.mainBox.append(self.interfaceBox)
+		self.box1 = Gtk.Box(spacing = 20)
+		self.interfaceBox.append(self.box1)
+		self.box2 = Gtk.Box(spacing = 20)
+		self.interfaceBox.append(self.box2)
 
 		#Scrollable right side of the window for the Code block
 		self.scrolledWindow = Gtk.ScrolledWindow()
@@ -139,8 +136,6 @@ class window(Gtk.ApplicationWindow):
 		self.scrolledWindow.set_hexpand(True)
 		self.mainBox.append(self.scrolledWindow)
 		
-		self.borderBox = Gtk.Box()
-		self.mainBox.append(self.borderBox)
 
 
 		#Populate the Header Bar
@@ -201,19 +196,14 @@ class window(Gtk.ApplicationWindow):
 
 		#Dropdown to choose the file
 		self.fileChooser = Gtk.ComboBoxText()
-		self.interfaceBox.append(self.fileChooser)
+		self.box1.append(self.fileChooser)
 		self.fillSelection()
 		self.fileChooser.connect('changed', self.fileChanged)
 
 		#Button to open the file
-		self.run = Gtk.Button(label = 'Run')
-		self.run.connect('clicked', self.runClicked)
-		self.interfaceBox.append(self.run)
-		
-		#Button to open the file
-		self.open = Gtk.Button(label = 'Open')
-		self.open.connect('clicked', self.openClicked)
-		self.interfaceBox.append(self.open)
+		self.submit = Gtk.Button(label = 'Open')
+		self.submit.connect('clicked', self.submitClicked)
+		self.box2.append(self.submit)
 
 		#displays the code of the opened file
 		self.codeLabel = Gtk.Label()
@@ -252,16 +242,10 @@ class window(Gtk.ApplicationWindow):
 		for entry in files:
 			self.fileChooser.append_text(entry)
 
-	#runs the selected file
-	def runClicked(self, widget):
+	#submits the filechoice
+	def submitClicked(self, widget):
 		file = self.fileChooser.get_active_text()
 		app.openFile(file)
-
-	#open the selected file in default app
-	def openClicked(self, widget):
-		file = self.fileChooser.get_active_text()
-		path = app.readConfig('Target_Path')
-		os.system('gedit ' + path + '/' + file)
 		
 	def onChecked(self, widget):
 		app.setConfig(widget.get_label(), str(widget.get_active()))
@@ -273,21 +257,16 @@ class window(Gtk.ApplicationWindow):
 		else:
 			return False
 
-class MyApp(Gtk.Application):
-    def __init__(self):
-        super().__init__(application_id='org.Unicorn.Codey')#, flags=Gio.ApplicationFlags.FLAGS_NONE)
+class MyApp(Adw.Application):
+	def __init__(self, **kwargs):
+		super().__init__(**kwargs)
+		self.connect('activate', self.on_activate)
 
-    def do_activate(self):
-        win = self.props.active_window
-        if not win:
-            win = window(application=self)
-        win.present()
-
-
-def main():
-	app2=MyApp()
-	return app2.run(sys.argv)
-
+	def on_activate(self, app):
+		self.win = window(application = app)
+		self.win.present()
+		
+		
 app.checkValidFolder()
 
 #start webserver
@@ -297,8 +276,8 @@ os.system('php -S localhost:9000 -t ~/ &>/dev/null &')
 #window.connect('delete-event', Gtk.main_quit)
 #window.show_all()
 #Gtk.main()
-if __name__ == '__main__':
-	main()
+app2=MyApp(application_id='org.Unicorn.Codey')
+app2.run(sys.argv)
 
 #kill webserver
 os.system('killall -9 php &>/dev/null &')
