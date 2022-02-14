@@ -104,7 +104,6 @@ class window(Gtk.ApplicationWindow):
 		
 		#window
 		Gtk.Window.__init__(self, title='Codey')
-		#self.set_border_width(20)
 		self.set_default_size(960, 540)
 
 		
