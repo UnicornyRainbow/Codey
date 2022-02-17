@@ -72,7 +72,7 @@ class app():
 		for settings in allSettings:
 			if settings[0] == setting:
 				settings[1] = content
-		with open('codey.config', 'w') as config:
+		with open(os.path.dirname(__file__)+'/codey.config', 'w') as config:
 			for settings in allSettings:
 				config.write(': '.join(settings) + '\n')
 			
@@ -80,7 +80,7 @@ class app():
 	#reads the config
 	def readConfig(setting):
 		allSettings = []
-		with open('codey.config', 'r') as config:
+		with open(os.path.dirname(__file__)+'/codey.config', 'r') as config:
 			for line in config:
 				line = line.strip().split(': ')
 				if setting == 'allSettings':
