@@ -1,0 +1,61 @@
+app-id: io.github.unicorn.codey
+runtime: org.freedesktop.Platform
+runtime-version: '21.08'
+sdk: org.freedesktop.Sdk
+command: run.sh
+modules:
+  - name: Codey
+    buildsystem: simple
+    build-commands:
+      - install -D run.sh /app/bin/run.sh
+      - install -D codey.py /app/bin/main.py
+      - install -D codey.config /app/bin/mainmenu.py
+      - install -D conf.py /app/bin/conf.py
+      - install -D LICENSE.txt /app/bin/LICENSE.txt
+      - install -D io.github.unicorn.codey.desktop /app/share/applications/io.github.unicorn.codey.desktop
+      - install -D io.github.unicorn.codey.appdata.xml /app/share/metainfo/io.github.unicorn.codey.appdata.xml
+      - install -D io.github.unicorn.codey.png /app/share/icons/io.github.unicorn.codey.png
+    sources:
+      - type: file
+        path: codey.py
+      - type: file
+        path: codey.config
+      - type: file
+        path: run.sh
+      - type: file
+        path: io.github.unicorn.codey.desktop
+      - type: file
+        path: io.github.unicorn.codey.appdata.xml
+      - type: file
+        path: io.github.unicorn.codey.png
+      - type: file
+        path: LICENSE.txt
+
+  - name: python3-requirements
+    buildsystem: simple
+    build-commands: []
+    modules:
+    - name: python3-PyGObject
+      buildsystem: simple
+      build-commands:
+      - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
+        --prefix=${FLATPAK_DEST} "PyGObject" --no-build-isolation
+      sources:
+      - type: file
+        url: https://files.pythonhosted.org/packages/bc/3f/64e6e066d163fbcf13213f9eeda0fc83376243335ea46a66cefd70d62e8f/pycairo-1.20.1.tar.gz
+        sha256: 1ee72b035b21a475e1ed648e26541b04e5d7e753d75ca79de8c583b25785531b
+      - type: file
+        url: https://files.pythonhosted.org/packages/9f/95/9883829e6c86097f749c4c2bbe77ab90af8dfc8df8cbf8c56124a7a7009e/PyGObject-3.30.5.tar.gz
+        sha256: ab030c81278d1ed740b5093d017608316b15fc275f901854b22bcfaf8d40c528
+
+
+
+finish-args:
+  # X11 + XShm access
+  - --share=ipc
+  - --socket=x11
+  # Wayland access
+  - --socket=wayland
+  - --socket=session-bus
+  # Needs to save files locally
+  - --filesystem=~/Documents

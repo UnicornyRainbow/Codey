@@ -96,7 +96,7 @@ class app():
 class window(Gtk.ApplicationWindow):
 
 	def __init__(self, *args, **kwargs):
-		super().__init__(*args, **kwargs)#'Codey', 960, 540, **kwargs)
+		super().__init__(*args, **kwargs)
 
 		app3 = self.get_application()
 		sm = app3.get_style_manager()
@@ -275,7 +275,7 @@ os.system('php -S localhost:9000 -t ~/ &>/dev/null &')
 #window.connect('delete-event', Gtk.main_quit)
 #window.show_all()
 #Gtk.main()
-app2=MyApp(application_id='org.Unicorn.Codey')
+app2=MyApp(application_id='io.github.unicorn.codey')
 app2.run(sys.argv)
 
 #kill webserver

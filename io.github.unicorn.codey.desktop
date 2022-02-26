@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Codey
+Exec=run.sh
+Type=Application
+Icon=io.github.unicorn.codey
+Categories=Office

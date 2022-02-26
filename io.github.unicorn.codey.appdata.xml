@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.unicorn.Codey</id>
+
+  <name>Codey</name>
+  <summary>Display and launch various code</summary>
+
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+
+
+  <recommends>
+    <display_length compare="ge">540</display_length>
+  </recommends>
+
+  <description>
+    <p>
+      Display and launch various code from a simple, Gtk 4 and Libadwaita based app.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">io.github.unicorn.Codey.desktop</launchable>
+  <screenshots>
+  </screenshots>
+</component>
