@@ -8,9 +8,8 @@ modules:
     buildsystem: simple
     build-commands:
       - install -D run.sh /app/bin/run.sh
-      - install -D codey.py /app/bin/main.py
-      - install -D codey.config /app/bin/mainmenu.py
-      - install -D conf.py /app/bin/conf.py
+      - install -D codey.py /app/bin/codey.py
+      - install -D codey.config /app/bin/codey.config
       - install -D LICENSE.txt /app/bin/LICENSE.txt
       - install -D io.github.unicorn.codey.desktop /app/share/applications/io.github.unicorn.codey.desktop
       - install -D io.github.unicorn.codey.appdata.xml /app/share/metainfo/io.github.unicorn.codey.appdata.xml

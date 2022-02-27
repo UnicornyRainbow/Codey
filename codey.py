@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-# V-Notes, Note taking app using Python and GTK framework.
-#     Copyright (C) 2022  Vega
+# Codey, Display and launch various code.
+#     Copyright (C) 2022  Unicorn
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
