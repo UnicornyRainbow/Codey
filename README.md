@@ -1,8 +1,38 @@
 # Codey
 A simple application to preview and run code files, primarily intended for webdevelopment.
 
-# Dependencies:
-**Currently u need the developer versions** untill I can pakage it as flatpak
-* Gtk 4
-* Python 3
-* Libadwaita 1
+![codey-screenshot-1](https://i.postimg.cc/Bn8Y05LN/codey-screenshot-1.png)
+
+# Installation
+First make sure you have the following dependencies installed:
+* flatpak
+* flathub beta repo
+```commandline
+flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+```
+then install via a graphical software center or run
+```commandline
+flatpak install unicorn.flatpak
+```
+
+# Build it from source
+You need the gnome 42 beta runtime
+You need to download the zip from github or run
+```commandline
+git clone https://github.com/blackmoonboy/codey
+```
+then build it with(you can edid the arguments to your needs)
+```commandline
+cd Codey & chmod +x flatpak_build.sh & flatpak_build.sh -i
+```
+
+# Run it from source
+You need Pygobject, xdg, gtk 4, libadwaita 1
+You need to download the zip from github or run
+```commandline
+git clone https://github.com/blackmoonboy/codey
+```
+Run codey.py:
+```commandline
+cd Codey & python3 codey.py
+```

@@ -24,18 +24,25 @@ import sys
 gi.require_version('Gtk','4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw
+import xdg
+#from xdg import xdg_config_home
 
 
 
 class app():
 
+	def checkValidConfig():
+		try:
+			if os.path.exists(app.readConfig('Target_Path')):
+				return
+			else:
+				app.setConfig('Target_Path', '/home')
+		except Exception as e:
+			if type(e) == FileNotFoundError:
+				with open((xdg.xdg_config_home().__str__()+'/codey.config'), "a+") as file:
+					file.write(
+						"Target_Path: /home\nShow Hidden Files: True\nShow PhP Files: True\nShow HTML Files: True\nShow Python Files: True\nShow Shell Files: True")
 
-	#called on startup, checks if folder set in config is valid
-	def checkValidFolder():
-		if os.path.exists(app.readConfig('Target_Path')):
-			return
-		else:
-			app.setConfig('Target_Path', '/home')
 
 
 	#opens the selected file in a webbrowser
@@ -88,7 +95,7 @@ class app():
 		for settings in allSettings:
 			if settings[0] == setting:
 				settings[1] = content
-		with open(os.path.dirname(__file__)+'/codey.config', 'w') as config:
+		with open(xdg.xdg_config_home().__str__()+'/codey.config', 'w') as config:
 			for settings in allSettings:
 				config.write(': '.join(settings) + '\n')
 			
@@ -96,7 +103,7 @@ class app():
 	#reads the config
 	def readConfig(setting):
 		allSettings = []
-		with open(os.path.dirname(__file__)+'/codey.config', 'r') as config:
+		with open(xdg.xdg_config_home().__str__()+'/codey.config', 'r') as config:
 			for line in config:
 				line = line.strip().split(': ')
 				if setting == 'allSettings':
@@ -282,7 +289,7 @@ class MyApp(Adw.Application):
 		self.win.present()
 		
 		
-app.checkValidFolder()
+app.checkValidConfig()
 
 #start webserver
 os.system('php -S localhost:9000 -t ~/ &>/dev/null &')

@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Codey
-Comment=Display and launch various code
-Exec=bash -c 'cd ~/sourcefiles/unicorn_codey; ./codey.py'
-Icon=unicorn_codey
-Terminal=false

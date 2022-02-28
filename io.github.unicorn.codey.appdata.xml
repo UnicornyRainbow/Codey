@@ -21,5 +21,8 @@
 
   <launchable type="desktop-id">io.github.unicorn.Codey.desktop</launchable>
   <screenshots>
+    <screenshot>
+      <image>https://i.postimg.cc/Bn8Y05LN/codey-screenshot-1.png</image>
+    </screenshot>
   </screenshots>
 </component>
