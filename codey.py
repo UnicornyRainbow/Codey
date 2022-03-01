@@ -285,22 +285,22 @@ app.checkValidConfig()
 
 #start webserver
 #for Flatpak use
-#process = subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
-#process = subprocess.Popen(['flatpak-spawn', '--host', 'python3', '-m', 'http.server'])
+process = subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
+process = subprocess.Popen(['flatpak-spawn', '--host', 'python3', '-m', 'http.server'])
 #for source use
-process = subprocess.Popen(['php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
-process = subprocess.Popen(['python3', '-m', 'http.server', '--directory', os.path.expanduser('~')])
+#process = subprocess.Popen(['php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
+#process = subprocess.Popen(['python3', '-m', 'http.server', '--directory', os.path.expanduser('~')])
 
 app2=MyApp(application_id='io.github.unicorn.codey')
 app2.run(sys.argv)
 
 #kill webserver
 #for Flatpak use
-#process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
-#process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'python3'])
+process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
+process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'python3'])
 #for source use
-process = subprocess.Popen(['killall', '-9', 'php'])
-process = subprocess.Popen(['killall', '-9', 'python3'])
+#process = subprocess.Popen(['killall', '-9', 'php'])
+#process = subprocess.Popen(['killall', '-9', 'python3'])
 
 
 
