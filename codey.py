@@ -18,14 +18,13 @@
 
 
 import os
-import webbrowser
 import gi
 import sys
+import subprocess
 gi.require_version('Gtk','4.0')
 gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw
 import xdg
-#from xdg import xdg_config_home
 
 
 
@@ -36,24 +35,29 @@ class app():
 			if os.path.exists(app.readConfig('Target_Path')):
 				return
 			else:
-				app.setConfig('Target_Path', '/home')
+				app.setConfig('Target_Path', os.path.expanduser('~'))
 		except Exception as e:
 			if type(e) == FileNotFoundError:
 				with open((xdg.xdg_config_home().__str__()+'/codey.config'), "a+") as file:
 					file.write(
-						"Target_Path: /home\nShow Hidden Files: True\nShow PhP Files: True\nShow HTML Files: True\nShow Python Files: True\nShow Shell Files: True")
+						"Target_Path: " + os.path.expanduser('~') + "\nShow Hidden Files: True\nShow PhP Files: True\nShow HTML Files: True\nShow Python Files: True")
 
 
 
 	#opens the selected file in a webbrowser
-	def openFile(file):
+	def openFile(file, action):
 		longpath = app.readConfig('Target_Path')
 		shortpath = '/'.join(longpath.split('/')[3:])			#gets path as string, converts it to list and deletes first 3 entrys(/home/user), puts it back together
-		if file.endswith('.php') or file.endswith('.html'):
-			url = 'localhost:9000/' + shortpath + '/' + file
-			webbrowser.open_new_tab(url)
-		elif file.endswith('.sh') or file.endswith('.py'):
-			os.system('gnome-terminal -- "' + longpath + '/' + file + '"')#longpath + '/' + file)
+		if action == 'Run':
+			if file.endswith('.php') or file.endswith('.html'):
+				url = 'http://localhost:9000/' + shortpath + '/' + file
+				process = subprocess.Popen(['xdg-open', url])
+			elif file.endswith('.py'):
+				url = 'http://localhost:8000/' + shortpath + '/' + file
+				process = subprocess.Popen(['xdg-open', url])
+		elif action == 'Open':
+			path = longpath + '/' + file
+			process = subprocess.Popen(['xdg-open', path])
 
 	#gets the code of the given file
 	def getCode(file):
@@ -72,15 +76,12 @@ class app():
 		fileList = []
 		with os.scandir(path) as dirs:
 			for entry in dirs:
-				#if not entry.name.startswith('.', 0, 1):		#hides hidden files
 				if entry.is_file():					#hides folders
 					if entry.name.endswith('.php') and app.readConfig('Show PhP Files') == 'True':
 						fileList.append(entry.name)
 					elif entry.name.endswith('.html') and app.readConfig('Show HTML Files') == 'True':
 						fileList.append(entry.name)
 					elif entry.name.endswith('.py') and app.readConfig('Show Python Files') == 'True':
-						fileList.append(entry.name)
-					elif entry.name.endswith('.sh') and app.readConfig('Show Shell Files') == 'True':
 						fileList.append(entry.name)
 		if app.readConfig('Show Hidden Files') == 'False':
 			for entry in fileList:
@@ -125,6 +126,8 @@ class window(Gtk.ApplicationWindow):
 		sm = app3.get_style_manager()
 		sm.set_color_scheme(Adw.ColorScheme.PREFER_DARK)
 		
+		self.spacing = 10
+		
 		#window
 		Gtk.Window.__init__(self, title='Codey')
 		self.set_default_size(960, 540)
@@ -141,16 +144,15 @@ class window(Gtk.ApplicationWindow):
 		self.headerBar.set_title_widget(self.title)
 
 		#Setup general window Structure
-		self.mainBox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 40)
+		self.mainBox = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = (self.spacing * 4))
+		self.mainBox.set_margin_start(self.spacing)
+		self.mainBox.set_margin_top(self.spacing)
+		self.mainBox.set_margin_bottom(self.spacing)
 		self.set_child(self.mainBox)
 
 		#left side of Window, used for Button etc
-		self.interfaceBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 10)
+		self.interfaceBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = self.spacing)
 		self.mainBox.append(self.interfaceBox)
-		self.box1 = Gtk.Box(spacing = 20)
-		self.interfaceBox.append(self.box1)
-		self.box2 = Gtk.Box(spacing = 20)
-		self.interfaceBox.append(self.box2)
 
 		#Scrollable right side of the window for the Code block
 		self.scrolledWindow = Gtk.ScrolledWindow()
@@ -167,48 +169,37 @@ class window(Gtk.ApplicationWindow):
 		self.popover = Gtk.Popover()
 		self.popover.set_position(Gtk.PositionType.BOTTOM)
 		self.menuButton = Gtk.MenuButton(popover=self.popover)
-		#self.menuIcon = Gtk.Image.new_from_icon_name("open-menu-symbolic")
-		#self.menuButton.append(self.menuIcon)
 		self.headerBar.pack_end(self.menuButton)
 		#add a box to the Menu
-		self.menuBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+		self.menuBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing)
 		self.popover.set_child(self.menuBox)
 		#add Menu Items 
 		self.showHidden = Gtk.CheckButton()
 		self.showHidden.set_label('Show Hidden Files')
 		self.showHidden.set_active(self.setCheckButton(self.showHidden.get_label()))
 		self.showHidden.connect("toggled", self.onChecked)
-		self.menuBox.prepend(self.showHidden)#, False, True, 10)
+		self.menuBox.prepend(self.showHidden)
 		self.showPhp = Gtk.CheckButton()
 		self.showPhp.set_label('Show PhP Files')
 		self.showPhp.set_active(self.setCheckButton(self.showPhp.get_label()))
 		self.showPhp.connect("toggled", self.onChecked)
-		self.menuBox.prepend(self.showPhp)#, False, True, 10)
+		self.menuBox.prepend(self.showPhp)
 		self.showHtml = Gtk.CheckButton()
 		self.showHtml.set_label('Show HTML Files')
 		self.showHtml.set_active(self.setCheckButton(self.showHtml.get_label()))
 		self.showHtml.connect("toggled", self.onChecked)
-		self.menuBox.prepend(self.showHtml)#, False, True, 10)
+		self.menuBox.prepend(self.showHtml)
 		self.showPy = Gtk.CheckButton()
 		self.showPy.set_label('Show Python Files')
 		self.showPy.set_active(self.setCheckButton(self.showPy.get_label()))
 		self.showPy.connect("toggled", self.onChecked)
-		self.menuBox.prepend(self.showPy)#, False, True, 10)
-		self.showShell = Gtk.CheckButton()
-		self.showShell.set_label('Show Shell Files')
-		self.showShell.set_active(self.setCheckButton(self.showShell.get_label()))
-		self.showShell.connect("toggled", self.onChecked)
-		self.menuBox.prepend(self.showShell)#, False, True, 10)
-		#add all the Menu items and show them 
-		#self.menuBox.show_all()
-		
-		#self.setCheckButton()
+		self.menuBox.prepend(self.showPy)
 
 		
 		
 		#Sourcefolder Chooser
 		self.folderChooser = Gtk.Button()
-		self.folderIcon = Gtk.Image.new_from_icon_name('folder-open-symbolic')#, Gtk.IconSize.MENU)
+		self.folderIcon = Gtk.Image.new_from_icon_name('folder-open-symbolic')
 		self.folderChooser.set_child(self.folderIcon)
 		self.folderChooser.connect('clicked', self.folderClicked)
 		self.headerBar.pack_start(self.folderChooser)
@@ -218,14 +209,18 @@ class window(Gtk.ApplicationWindow):
 
 		#Dropdown to choose the file
 		self.fileChooser = Gtk.ComboBoxText()
-		self.box1.append(self.fileChooser)
+		self.interfaceBox.append(self.fileChooser)
 		self.fillSelection()
 		self.fileChooser.connect('changed', self.fileChanged)
 
-		#Button to open the file
-		self.submit = Gtk.Button(label = 'Open')
+		#Buttons to open the file
+		self.submit = Gtk.Button(label = 'Run')
 		self.submit.connect('clicked', self.submitClicked)
-		self.box2.append(self.submit)
+		self.interfaceBox.append(self.submit)
+		
+		self.open = Gtk.Button(label = 'Open')
+		self.open.connect('clicked', self.submitClicked)
+		self.interfaceBox.append(self.open)
 
 		#displays the code of the opened file
 		self.codeLabel = Gtk.Label()
@@ -240,13 +235,10 @@ class window(Gtk.ApplicationWindow):
 		dialog = Gtk.FileChooserDialog(title='Select a Folder', action=Gtk.FileChooserAction.SELECT_FOLDER)
 		dialog.set_transient_for(self)
 		dialog.add_buttons('Cancel', Gtk.ResponseType.CANCEL, 'Open', Gtk.ResponseType.OK)
-		#response = 0
 		dialog.connect('response', self.on_dialog_response)
 		dialog.show()
 		
 	def on_dialog_response(self, widget, response_id):
-		#print(widget)
-		#print(response_id)
 		if response_id == Gtk.ResponseType.OK:
 			app.setConfig('Target_Path', widget.get_file().get_path())
 		self.fileChooser.remove_all()					#removes all old file entries in dropdown
@@ -267,7 +259,7 @@ class window(Gtk.ApplicationWindow):
 	#submits the filechoice
 	def submitClicked(self, widget):
 		file = self.fileChooser.get_active_text()
-		app.openFile(file)
+		app.openFile(file, widget.get_label())
 		
 	def onChecked(self, widget):
 		app.setConfig(widget.get_label(), str(widget.get_active()))
@@ -292,17 +284,23 @@ class MyApp(Adw.Application):
 app.checkValidConfig()
 
 #start webserver
-os.system('php -S localhost:9000 -t ~/ &>/dev/null &')
+#for Flatpak use
+#process = subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
+#process = subprocess.Popen(['flatpak-spawn', '--host', 'python3', '-m', 'http.server'])
+#for source use
+process = subprocess.Popen(['php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
+process = subprocess.Popen(['python3', '-m', 'http.server', '--directory', os.path.expanduser('~')])
 
-#window = window()
-#window.connect('delete-event', Gtk.main_quit)
-#window.show_all()
-#Gtk.main()
 app2=MyApp(application_id='io.github.unicorn.codey')
 app2.run(sys.argv)
 
 #kill webserver
-os.system('killall -9 php &>/dev/null &')
+#for Flatpak use
+#process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
+#process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'python3'])
+#for source use
+process = subprocess.Popen(['killall', '-9', 'php'])
+process = subprocess.Popen(['killall', '-9', 'python3'])
 
 
 

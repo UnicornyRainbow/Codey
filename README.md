@@ -1,7 +1,7 @@
 # Codey
 A simple application to preview and run code files, primarily intended for webdevelopment.
 
-![codey-screenshot-1](https://i.postimg.cc/Bn8Y05LN/codey-screenshot-1.png)
+![codey-screenshot-1](https://i.postimg.cc/SxBKTW2w/Codey-Screenshot.png)
 
 # Installation
 First make sure you have the following dependencies installed:
@@ -32,6 +32,7 @@ You need to download the zip from github or run
 ```commandline
 git clone https://github.com/blackmoonboy/codey
 ```
+Then you need to comment/uncomment some of the last lines according to the comments
 Run codey.py:
 ```commandline
 cd Codey & python3 codey.py

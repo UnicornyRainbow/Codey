@@ -54,14 +54,17 @@ modules:
         sha256: 865a7b56ed1d4cd2fce2ead1eddf97360843619757f473cd90b75f1817ca541d
 
 
-
 finish-args:
   # X11 + XShm access
   - --share=ipc
-  - --socket=x11
+  - --socket=fallback-x11
   # Wayland access
   - --socket=wayland
   - --socket=session-bus
-  # Needs to save files locally
+  # Gnome/Gtk permisiions
+  - --talk-name=org.gtk.vfs.*
+  - --filesystem=xdg-run/gvfsd
+  # Fileaccess
   - --filesystem=home
-  - --filesystem=xdg-run/gvfsd privileges
+  - --talk-name=org.mozilla.Firefox
+  - --system-talk-name=org.mozilla.Firefox
