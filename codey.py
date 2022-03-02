@@ -40,7 +40,7 @@ class app():
 			if type(e) == FileNotFoundError:
 				with open((xdg.xdg_config_home().__str__()+'/codey.config'), "a+") as file:
 					file.write(
-						"Target_Path: " + os.path.expanduser('~') + "\nShow Hidden Files: True\nShow PhP Files: True\nShow HTML Files: True\nShow Python Files: True")
+						"Target_Path: " + os.path.expanduser('~') + "\nShow Hidden Files: False\nShow PhP Files: True\nShow HTML Files: True\nShow all Files: False")
 
 
 
@@ -49,12 +49,8 @@ class app():
 		longpath = app.readConfig('Target_Path')
 		shortpath = '/'.join(longpath.split('/')[3:])			#gets path as string, converts it to list and deletes first 3 entrys(/home/user), puts it back together
 		if action == 'Run':
-			if file.endswith('.php') or file.endswith('.html'):
-				url = 'http://localhost:9000/' + shortpath + '/' + file
-				process = subprocess.Popen(['xdg-open', url])
-			elif file.endswith('.py'):
-				url = 'http://localhost:8000/' + shortpath + '/' + file
-				process = subprocess.Popen(['xdg-open', url])
+			url = 'http://localhost:9000/' + shortpath + '/' + file
+			process = subprocess.Popen(['xdg-open', url])
 		elif action == 'Open':
 			path = longpath + '/' + file
 			process = subprocess.Popen(['xdg-open', path])
@@ -77,12 +73,13 @@ class app():
 		with os.scandir(path) as dirs:
 			for entry in dirs:
 				if entry.is_file():					#hides folders
-					if entry.name.endswith('.php') and app.readConfig('Show PhP Files') == 'True':
+					if app.readConfig('Show all Files') == 'True':
 						fileList.append(entry.name)
-					elif entry.name.endswith('.html') and app.readConfig('Show HTML Files') == 'True':
-						fileList.append(entry.name)
-					elif entry.name.endswith('.py') and app.readConfig('Show Python Files') == 'True':
-						fileList.append(entry.name)
+					else:
+						if entry.name.endswith('.php') and app.readConfig('Show PhP Files') == 'True':
+							fileList.append(entry.name)
+						elif entry.name.endswith('.html') and app.readConfig('Show HTML Files') == 'True':
+							fileList.append(entry.name)
 		if app.readConfig('Show Hidden Files') == 'False':
 			for entry in fileList:
 				if entry.startswith('.'):
@@ -189,11 +186,11 @@ class window(Gtk.ApplicationWindow):
 		self.showHtml.set_active(self.setCheckButton(self.showHtml.get_label()))
 		self.showHtml.connect("toggled", self.onChecked)
 		self.menuBox.prepend(self.showHtml)
-		self.showPy = Gtk.CheckButton()
-		self.showPy.set_label('Show Python Files')
-		self.showPy.set_active(self.setCheckButton(self.showPy.get_label()))
-		self.showPy.connect("toggled", self.onChecked)
-		self.menuBox.prepend(self.showPy)
+		self.showAll = Gtk.CheckButton()
+		self.showAll.set_label('Show all Files')
+		self.showAll.set_active(self.setCheckButton(self.showAll.get_label()))
+		self.showAll.connect("toggled", self.onChecked)
+		self.menuBox.prepend(self.showAll)
 
 		
 		
@@ -263,6 +260,8 @@ class window(Gtk.ApplicationWindow):
 		
 	def onChecked(self, widget):
 		app.setConfig(widget.get_label(), str(widget.get_active()))
+		self.fileChooser.remove_all()
+		self.fillSelection()
 		
 	def setCheckButton(self, name):
 		setting = app.readConfig(name)
@@ -286,10 +285,8 @@ app.checkValidConfig()
 #start webserver
 #for Flatpak use
 process = subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
-process = subprocess.Popen(['flatpak-spawn', '--host', 'python3', '-m', 'http.server'])
 #for source use
 #process = subprocess.Popen(['php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
-#process = subprocess.Popen(['python3', '-m', 'http.server', '--directory', os.path.expanduser('~')])
 
 app2=MyApp(application_id='io.github.unicorn.codey')
 app2.run(sys.argv)
@@ -297,10 +294,8 @@ app2.run(sys.argv)
 #kill webserver
 #for Flatpak use
 process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
-process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'python3'])
 #for source use
 #process = subprocess.Popen(['killall', '-9', 'php'])
-#process = subprocess.Popen(['killall', '-9', 'python3'])
 
 
 
