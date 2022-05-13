@@ -65,7 +65,7 @@ class app():
 			with open(file, 'r') as contents:
 				code = contents.read()
 		return code
-		
+
 	#gets all the files in the current directory
 	def getFiles():
 		path = app.readConfig('Target_Path')
@@ -84,9 +84,9 @@ class app():
 			for entry in fileList:
 				if entry.startswith('.'):
 					fileList.remove(entry)
-						
+
 		return fileList
-		
+
 	#writes the config
 	def setConfig(setting, content):
 		allSettings = app.readConfig('allSettings')
@@ -96,8 +96,8 @@ class app():
 		with open(xdg.xdg_config_home().__str__()+'/codey.config', 'w') as config:
 			for settings in allSettings:
 				config.write(': '.join(settings) + '\n')
-			
-			
+
+
 	#reads the config
 	def readConfig(setting):
 		allSettings = []
@@ -121,15 +121,14 @@ class window(Gtk.ApplicationWindow):
 
 		app3 = self.get_application()
 		sm = app3.get_style_manager()
-		sm.set_color_scheme(Adw.ColorScheme.PREFER_DARK)
-		
+
 		self.spacing = 10
-		
+
 		#window
 		Gtk.Window.__init__(self, title='Codey')
 		self.set_default_size(960, 540)
 
-		
+
 		#Define the General structure of the Window
 
 		#Header Bar
@@ -156,21 +155,20 @@ class window(Gtk.ApplicationWindow):
 		self.scrolledWindow.set_vexpand(True)
 		self.scrolledWindow.set_hexpand(True)
 		self.mainBox.append(self.scrolledWindow)
-		
+
 
 
 		#Populate the Header Bar
 
 		#Hamburger Menu
 		#Popover and Button
-		self.popover = Gtk.Popover()
-		self.popover.set_position(Gtk.PositionType.BOTTOM)
-		self.menuButton = Gtk.MenuButton(popover=self.popover)
+		self.popover = Gtk.Popover(position = Gtk.PositionType.BOTTOM, has_arrow = True)
+		self.menuButton = Gtk.MenuButton(popover=self.popover, icon_name = "open-menu-symbolic", primary = True)
 		self.headerBar.pack_end(self.menuButton)
 		#add a box to the Menu
 		self.menuBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=self.spacing)
 		self.popover.set_child(self.menuBox)
-		#add Menu Items 
+		#add Menu Items
 		self.showHidden = Gtk.CheckButton()
 		self.showHidden.set_label('Show Hidden Files')
 		self.showHidden.set_active(self.setCheckButton(self.showHidden.get_label()))
@@ -191,9 +189,12 @@ class window(Gtk.ApplicationWindow):
 		self.showAll.set_active(self.setCheckButton(self.showAll.get_label()))
 		self.showAll.connect("toggled", self.onChecked)
 		self.menuBox.prepend(self.showAll)
-
-		
-		
+		self.about = Gtk.Button(label = 'About', has_frame = False)
+		self.about.connect('clicked', self.aboutClicked)
+		self.menuBox.append(self.about)
+  
+  
+  
 		#Sourcefolder Chooser
 		self.folderChooser = Gtk.Button()
 		self.folderIcon = Gtk.Image.new_from_icon_name('folder-open-symbolic')
@@ -214,7 +215,7 @@ class window(Gtk.ApplicationWindow):
 		self.submit = Gtk.Button(label = 'Run')
 		self.submit.connect('clicked', self.submitClicked)
 		self.interfaceBox.append(self.submit)
-		
+
 		self.open = Gtk.Button(label = 'Open')
 		self.open.connect('clicked', self.submitClicked)
 		self.interfaceBox.append(self.open)
@@ -227,6 +228,7 @@ class window(Gtk.ApplicationWindow):
 
 
 
+
 	#opens dialog to choose folder to look in
 	def folderClicked(self, widget):
 		dialog = Gtk.FileChooserDialog(title='Select a Folder', action=Gtk.FileChooserAction.SELECT_FOLDER)
@@ -234,7 +236,7 @@ class window(Gtk.ApplicationWindow):
 		dialog.add_buttons('Cancel', Gtk.ResponseType.CANCEL, 'Open', Gtk.ResponseType.OK)
 		dialog.connect('response', self.on_dialog_response)
 		dialog.show()
-		
+
 	def on_dialog_response(self, widget, response_id):
 		if response_id == Gtk.ResponseType.OK:
 			app.setConfig('Target_Path', widget.get_file().get_path())
@@ -250,6 +252,7 @@ class window(Gtk.ApplicationWindow):
 	#fills files from current directory into dropdown
 	def fillSelection(self):
 		files = app.getFiles()
+		files.sort()
 		for entry in files:
 			self.fileChooser.append_text(entry)
 
@@ -257,18 +260,23 @@ class window(Gtk.ApplicationWindow):
 	def submitClicked(self, widget):
 		file = self.fileChooser.get_active_text()
 		app.openFile(file, widget.get_label())
-		
+
 	def onChecked(self, widget):
 		app.setConfig(widget.get_label(), str(widget.get_active()))
 		self.fileChooser.remove_all()
 		self.fillSelection()
-		
+
 	def setCheckButton(self, name):
 		setting = app.readConfig(name)
 		if setting == 'True':
 			return True
 		else:
 			return False
+
+	def aboutClicked(self, widget):
+	    self.dialog = Gtk.AboutDialog(authors = ['Unicorn'], artists= ['Unicorn'], comments = 'Display and launch various code using the Php webserver.', license_type = Gtk.License.GPL_3_0_ONLY, program_name = 'Codey', version = '1.0.0', website_label = 'Github', website = 'https://github.com/UnicornyRainbow/Codey')
+	    self.dialog.set_logo_icon_name('codey')
+	    self.dialog.show()
 
 class MyApp(Adw.Application):
 	def __init__(self, **kwargs):
@@ -279,7 +287,7 @@ class MyApp(Adw.Application):
 		self.win = window(application = app)
 		self.win.present()
 		
-		
+
 app.checkValidConfig()
 
 #start webserver
@@ -290,7 +298,7 @@ process = subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:900
 
 app2=MyApp(application_id='io.github.unicorn.codey')
 app2.run(sys.argv)
-
+ 
 #kill webserver
 #for Flatpak use
 process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])

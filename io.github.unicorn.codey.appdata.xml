@@ -1,6 +1,7 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>io.github.unicorn.Codey</id>
+  <id>io.github.unicorn.codey</id>
 
   <name>Codey</name>
   <summary>Display and launch various code</summary>
@@ -8,14 +9,28 @@
   <metadata_license>FSFAP</metadata_license>
   <project_license>GPL-3.0-only</project_license>
 
+  <categories>
+    <category>Development</category>
+    <category>Utility</category>
+  </categories>
+
+  <keywords>
+    <keyword translate="no">programming</keyword>
+    <keyword translate="no">development</keyword>
+    <keyword translate="no">php</keyword>
+    <keyword translate="no">webserver</keyword>
+  </keywords>
+
+
 
   <recommends>
     <display_length compare="ge">540</display_length>
+    <display_length compare="gt">small</display_length>
   </recommends>
 
   <description>
     <p>
-      Display and launch various code from a simple, Gtk 4 and Libadwaita based app.
+      Display and launch various code, using the Php webserver, from a simple, Gtk 4 and Libadwaita based app.
     </p>
   </description>
 
@@ -25,4 +40,13 @@
       <image>https://i.postimg.cc/SxBKTW2w/Codey-Screenshot.png</image>
     </screenshot>
   </screenshots>
+
+  <content_rating type="oars-1.1"/>
+
+  <url type="homepage">https://github.com/UnicornyRainbow/Codey</url>
+  <url type="bugtracker">https://github.com/UnicornyRainbow/Codey/issues</url>
+
+  <releases>
+    <release version="1.0" date="2022-03-29"/>
+  </releases>
 </component>
