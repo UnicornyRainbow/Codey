@@ -26,8 +26,6 @@ gi.require_version('Adw', '1')
 from gi.repository import Gtk, Adw
 import xdg
 
-
-
 class app():
 
 	def checkValidConfig():
@@ -40,9 +38,7 @@ class app():
 			if type(e) == FileNotFoundError:
 				with open((xdg.xdg_config_home().__str__()+'/codey.config'), "a+") as file:
 					file.write(
-						"Target_Path: " + os.path.expanduser('~') + "\nShow Hidden Files: False\nShow PhP Files: True\nShow HTML Files: True\nShow all Files: False")
-
-
+						"Target_Path: " + os.path.expanduser('~') + "\nShow Hidden Files: False\nShow PhP Files: True\nShow HTML Files: True\nShow all Files: False\nStart MariaDB Database: False")
 
 	#opens the selected file in a webbrowser
 	def openFile(file, action):
@@ -65,6 +61,12 @@ class app():
 			with open(file, 'r') as contents:
 				code = contents.read()
 		return code
+
+	def setCode(file, code):
+		path = app.readConfig('Target_Path')
+		file = path + "/" + file
+		with open(file, 'w') as contents:
+			contents.write(code)
 
 	#gets all the files in the current directory
 	def getFiles():
@@ -149,6 +151,7 @@ class window(Gtk.ApplicationWindow):
 		#left side of Window, used for Button etc
 		self.interfaceBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = self.spacing)
 		self.mainBox.append(self.interfaceBox)
+		self.interfaceEditBox = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = self.spacing)
 
 		#Scrollable right side of the window for the Code block
 		self.scrolledWindow = Gtk.ScrolledWindow()
@@ -189,6 +192,11 @@ class window(Gtk.ApplicationWindow):
 		self.showAll.set_active(self.setCheckButton(self.showAll.get_label()))
 		self.showAll.connect("toggled", self.onChecked)
 		self.menuBox.prepend(self.showAll)
+		self.maria = Gtk.CheckButton()
+		self.maria.set_label("Start MariaDB Database")
+		self.maria.set_active(self.setCheckButton(self.maria.get_label()))
+		self.maria.connect("toggled", self.mariaChecked)
+		self.menuBox.append(self.maria)
 		self.about = Gtk.Button(label = 'About', has_frame = False)
 		self.about.connect('clicked', self.aboutClicked)
 		self.menuBox.append(self.about)
@@ -220,14 +228,52 @@ class window(Gtk.ApplicationWindow):
 		self.open.connect('clicked', self.submitClicked)
 		self.interfaceBox.append(self.open)
 
+		self.edit = Gtk.Button(label = "Edit")
+		self.edit.connect("clicked", self.editClicked)
+		self.interfaceBox.append(self.edit)
+
+		self.save = Gtk.Button(label = "Save")
+		self.save.connect("clicked", self.saveClicked)
+		self.interfaceEditBox.append(self.save)
+
+		self.cancel = Gtk.Button(label = "Cancel")
+		self.cancel.connect("clicked", self.cancelClicked)
+		self.interfaceEditBox.append(self.cancel)
+
 		#displays the code of the opened file
 		self.codeLabel = Gtk.Label()
 		self.codeLabel.set_wrap(False)
 		self.codeLabel.set_justify(Gtk.Justification.LEFT)
 		self.scrolledWindow.set_child(self.codeLabel)
+		self.codeEditor = Gtk.TextView(vexpand = True, left_margin = 5, right_margin = 5, accepts_tab = True)
+		self.codeEditor.set_wrap_mode(2)
+		#self.scrolledWindow.set_child(self.codeEditor)
 
 
+	def cancelClicked(self, widget):
+		self.mainBox.remove(self.mainBox.get_first_child())
+		self.mainBox.prepend(self.interfaceBox)
+		self.scrolledWindow.set_child(self.codeLabel)
 
+	def saveClicked(self, widget):
+		file = self.fileChooser.get_active_text()
+		code = self.text.get_text(self.text.get_start_iter(), self.text.get_end_iter(), False)
+		app.setCode(file, code)
+		self.mainBox.remove(self.mainBox.get_first_child())
+		self.mainBox.prepend(self.interfaceBox)
+		self.scrolledWindow.set_child(self.codeLabel)
+		self.codeLabel.set_label(app.getCode(file))
+
+	#make File editable
+	def editClicked(self, widget):
+		#self.scrolledWindow.rem
+		self.scrolledWindow.set_child(self.codeEditor)
+		file = self.fileChooser.get_active_text()
+		self.text = Gtk.TextBuffer()
+		self.text.set_text(app.getCode(file))
+		self.codeEditor.set_buffer(self.text)
+		self.mainBox.remove(self.mainBox.get_first_child())
+		self.mainBox.prepend(self.interfaceEditBox)
 
 	#opens dialog to choose folder to look in
 	def folderClicked(self, widget):
@@ -266,6 +312,13 @@ class window(Gtk.ApplicationWindow):
 		self.fileChooser.remove_all()
 		self.fillSelection()
 
+	def mariaChecked(self, widget):
+		app.setConfig(widget.get_label(), str(widget.get_active()))
+		if widget.get_active() == False:
+			subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'stop', 'mariadb'])
+		elif widget.get_active() == True:
+			subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'start', 'mariadb'])
+
 	def setCheckButton(self, name):
 		setting = app.readConfig(name)
 		if setting == 'True':
@@ -290,20 +343,15 @@ class MyApp(Adw.Application):
 
 app.checkValidConfig()
 
-#start webserver
-#for Flatpak use
-process = subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
-#for source use
-#process = subprocess.Popen(['php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
+#start webserver and maybe mariadb
+subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
+if app.readConfig("Start MariaDB Database") == "True":
+	subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'start', 'mariadb'])
 
 app2=MyApp(application_id='io.github.unicorn.codey')
 app2.run(sys.argv)
  
-#kill webserver
-#for Flatpak use
-process = subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
-#for source use
-#process = subprocess.Popen(['killall', '-9', 'php'])
-
-
-
+#kill webserver and maybe mariadb
+subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
+if app.readConfig("Start MariaDB Database") == "True":
+	subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'stop', 'mariadb'])
