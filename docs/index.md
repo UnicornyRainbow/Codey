@@ -1,6 +1,6 @@
 # Codey
 
-!(codey.png)[/assets/codey.png]
+![codey.png](/assets/codey.png)
 
 A simple application to preview and run code files, primarily intended for webdevelopment.
 
