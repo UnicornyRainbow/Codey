@@ -9,5 +9,5 @@ It also supports automatically starting and stopping the MariaDB database, but t
 It is based on Python and uses the build in Php webserver.
 
 Here you can go to my other projects:
-* (Secrets)[https://unicornyrainbow.github.io/Secrets/], easily generate passwords
-* (Organizer)[https://unicornyrainbow.github.io/Organizer/], a simple, local Kanban board
+* [Secrets](https://unicornyrainbow.github.io/Secrets/), easily generate passwords
+* [Organizer](https://unicornyrainbow.github.io/Organizer/), a simple, local Kanban board
