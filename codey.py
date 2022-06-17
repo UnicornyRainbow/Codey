@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Codey, Display and launch various code.
-#     Copyright (C) 2022  Unicorn
+#     Copyright (C) 2022  UnicornyRainbow
 #
 #     This program is free software: you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
@@ -327,7 +327,7 @@ class window(Gtk.ApplicationWindow):
 			return False
 
 	def aboutClicked(self, widget):
-	    self.dialog = Gtk.AboutDialog(authors = ['Unicorn'], artists= ['Unicorn'], comments = 'Display and launch various code using the Php webserver.', license_type = Gtk.License.GPL_3_0_ONLY, program_name = 'Codey', version = '1.0.0', website_label = 'Github', website = 'https://github.com/UnicornyRainbow/Codey')
+	    self.dialog = Gtk.AboutDialog(authors = ['UnicornyRainbow'], artists= ['UnicornyRainbow'], comments = 'Display and launch various code using the Php webserver.', license_type = Gtk.License.GPL_3_0_ONLY, program_name = 'Codey', version = '1.0.0', website_label = 'Website', website = 'https://unicornyrainbow.github.io/Codey/')
 	    self.dialog.set_logo_icon_name('codey')
 	    self.dialog.show()
 
@@ -348,7 +348,7 @@ subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', 
 if app.readConfig("Start MariaDB Database") == "True":
 	subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'start', 'mariadb'])
 
-app2=MyApp(application_id='io.github.unicorn.codey')
+app2=MyApp(application_id='io.github.unicornyrainbow.codey')
 app2.run(sys.argv)
  
 #kill webserver and maybe mariadb

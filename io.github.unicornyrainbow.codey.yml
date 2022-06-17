@@ -1,4 +1,4 @@
-app-id: io.github.unicorn.codey
+app-id: io.github.unicornyrainbow.codey
 runtime: org.gnome.Platform
 runtime-version: '42'
 sdk: org.gnome.Sdk
@@ -10,20 +10,20 @@ modules:
       - install -D run.sh /app/bin/run.sh
       - install -D codey.py /app/bin/codey.py
       - install -D LICENSE.txt /app/bin/LICENSE.txt
-      - install -D io.github.unicorn.codey.desktop /app/share/applications/io.github.unicorn.codey.desktop
-      - install -D io.github.unicorn.codey.appdata.xml /app/share/metainfo/io.github.unicorn.codey.appdata.xml
-      - install -D io.github.unicorn.codey.svg /app/share/icons/io.github.unicorn.codey.svg
+      - install -D io.github.unicornyrainbow.codey.desktop /app/share/applications/io.github.unicornyrainbow.codey.desktop
+      - install -D io.github.unicornyrainbow.codey.appdata.xml /app/share/metainfo/io.github.unicornyrainbow.codey.appdata.xml
+      - install -D io.github.unicornyrainbow.codey.svg /app/share/icons/io.github.unicornyrainbow.codey.svg
     sources:
       - type: file
         path: codey.py
       - type: file
         path: run.sh
       - type: file
-        path: io.github.unicorn.codey.desktop
+        path: io.github.unicornyrainbow.codey.desktop
       - type: file
-        path: io.github.unicorn.codey.appdata.xml
+        path: io.github.unicornyrainbow.codey.appdata.xml
       - type: file
-        path: io.github.unicorn.codey.svg
+        path: io.github.unicornyrainbow.codey.svg
       - type: file
         path: LICENSE.txt
 

@@ -1,7 +1,7 @@
 
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>io.github.unicorn.codey</id>
+  <id>io.github.unicornyrainbow.codey</id>
 
   <name>Codey</name>
   <summary>Display and launch various code</summary>
@@ -34,17 +34,17 @@
     </p>
   </description>
 
-  <launchable type="desktop-id">io.github.unicorn.Codey.desktop</launchable>
+  <launchable type="desktop-id">io.github.unicornyrainbow.codey.desktop</launchable>
+
   <screenshots>
     <screenshot>
-      <image>https://i.postimg.cc/SxBKTW2w/Codey-Screenshot.png</image>
+      <image>https://unicornyrainbow.github.io/Codey/assets/codey.png</image>
     </screenshot>
   </screenshots>
 
   <content_rating type="oars-1.1"/>
 
-  <url type="homepage">https://github.com/UnicornyRainbow/Codey</url>
-  <url type="bugtracker">https://github.com/UnicornyRainbow/Codey/issues</url>
+  <url type="homepage">https://unicornyrainbow.github.io/Codey/</url>
 
   <releases>
     <release version="1.0" date="2022-03-29"/>

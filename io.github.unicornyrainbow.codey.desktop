@@ -2,5 +2,5 @@
 Name=Codey
 Exec=run.sh
 Type=Application
-Icon=io.github.unicorn.codey
+Icon=io.github.unicornyrainbow.codey
 Categories=Office
