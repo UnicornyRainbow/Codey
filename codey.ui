@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <!-- interface-requires gtk+ 4.0 -->
+  <template class="main_window" parent="GtkWindow">
+    <property name="default-width">960</property>
+    <property name="default-height">540</property>
+    <signal name="destroy" handler="onDestroy" swapped="no"/>
+    <child type="titlebar">
+      <object class="GtkHeaderBar">
+        <child type="start">
+          <object class="GtkButton">
+            <property name="icon-name">folder-open-symbolic</property>
+            <signal name="clicked" handler="folderClicked"/>
+          </object>
+        </child>
+        <child type="title">
+          <object class="GtkLabel">
+            <property name="label">Codey</property>
+          </object>
+        </child>
+        <child type="end">
+          <object class="GtkMenuButton">
+            <property name="popover">popover</property>
+            <property name="icon-name">open-menu-symbolic</property>
+            <property name="has-frame">False</property>
+            <property name="primary">True</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="GtkBox" id="mainBox">
+        <property name="orientation">horizontal</property>
+        <property name="spacing">10</property>
+        <property name="margin-top">10</property>
+        <property name="margin-bottom">10</property>
+        <property name="margin-start">10</property>
+        <property name="margin-end">10</property>
+        <child>
+          <object class="GtkBox" id="popoverBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkCheckButton" id="showAll">
+                <property name="label">Show all Files</property>
+                <signal name="toggled" handler="onChecked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="showHtml">
+                <property name="label">Show HTML Files</property>
+                <signal name="toggled" handler="onChecked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="showPhp">
+                <property name="label">Show PhP Files</property>
+                <signal name="toggled" handler="onChecked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="showHidden">
+                <property name="label">Show Hidden Files</property>
+                <signal name="toggled" handler="onChecked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkCheckButton" id="maria">
+                <property name="label">Start MariaDB Database</property>
+                <signal name="toggled" handler="mariaChecked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label">About</property>
+                <property name="has-frame">False</property>
+                <signal name="clicked" handler="aboutClicked"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="interfaceEditBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkButton">
+                <property name="label">Save</property>
+                <signal name="clicked" handler="saveClicked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label">Cancel</property>
+                <signal name="clicked" handler="cancelClicked"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="interfaceBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkComboBoxText" id="fileChooser">
+                <signal name="changed" handler="fileChanged"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label">Run</property>
+                <signal name="clicked" handler="submitClicked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label">Open</property>
+                <signal name="clicked" handler="submitClicked"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton">
+                <property name="label">Edit</property>
+                <signal name="clicked" handler="editClicked"/>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolledWindow">
+            <property name="vexpand">True</property>
+            <property name="hexpand">True</property>
+            <child>
+              <object class="GtkLabel" id="codeLabel">
+                <property name="wrap">False</property>
+                <property name="justify">left</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <object class="GtkPopover" id="popover">
+    <property name="position">bottom</property>
+    <property name="has-arrow">True</property>
+  </object>
+  <object class="GtkTextView" id="codeEditor">
+    <property name="vexpand">True</property>
+    <property name="left-margin">5</property>
+    <property name="right-margin">5</property>
+    <property name="accepts-tab">True</property>
+    <property name="wrap-mode">2</property>
+  </object>
+  <object class="GtkAboutDialog" id="aboutDialog">
+    <property name="authors">UnicornyRainbow</property>
+    <property name="artists">UnicornyRainbow</property>
+    <property name="comments">Display and launch various code using the Php webserver.</property>
+    <property name="license-type">gpl-3-0-only</property>
+    <property name="program-name">Codey</property>
+    <property name="version">1.0.0</property>
+    <property name="website-label">Website</property>
+    <property name="website">https://unicornyrainbow.github.io/Codey/</property>
+  </object>
+</interface>
