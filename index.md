@@ -8,8 +8,7 @@ Codey is written in python, using Gtk4 and Libadwaita and supports automatic lig
 It also supports automatically starting and stopping the MariaDB database, but this feature prompts the user everytime the database is started or stopped for the root password.
 It is based on Python and uses the build in Php webserver.
 
-Go to the sourcecode on [Github](https://github.com/UnicornyRainbow/Codey)
-
-Here you can go to my other projects:
-* [Secrets](https://unicornyrainbow.github.io/Secrets/), easily generate passwords
-* [Organizer](https://unicornyrainbow.github.io/Organizer/), a simple, local Kanban board
+Some important links: 
+* View the sourcecode on [Github](https://github.com/UnicornyRainbow/Codey)
+* Or [install](https://UnicornyRainbow.io/Codey/install) Codey.
+* Take a look at my other [projects](https://UnicornyRainbow.github.io/UnicornyRainbow/myProjects)
