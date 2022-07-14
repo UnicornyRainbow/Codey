@@ -249,16 +249,15 @@ class MyApp(Adw.Application):
 
         window.present()
 
+
 app.checkValidConfig()
 
 #start webserver and maybe mariadb
 subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
-if app.readConfig("Start MariaDB Database") == "True":
-    subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'start', 'mariadb'])
 
 app2=MyApp(application_id='io.github.unicornyrainbow.codey')
 app2.run(sys.argv)
- 
+
 #kill webserver and maybe mariadb
 subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
 if app.readConfig("Start MariaDB Database") == "True":
