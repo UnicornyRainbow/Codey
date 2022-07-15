@@ -9,6 +9,6 @@ It also supports automatically starting and stopping the MariaDB database, but t
 It is based on Python and uses the build in Php webserver.
 
 Some important links: 
-* View the sourcecode on [Github](https://github.com/UnicornyRainbow/Codey)
+* View the sourcecode on [Github](https://github.com/UnicornyRainbow/Codey) opr [GitLab](https://gitlab.com/UnicornyRainbow/Codey)
 * Or [install](https://UnicornyRainbow.io/Codey/install) Codey.
 * Take a look at my other [projects](https://UnicornyRainbow.github.io/UnicornyRainbow/myProjects)
