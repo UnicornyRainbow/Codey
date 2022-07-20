@@ -21,7 +21,7 @@ import os
 import gi
 import sys
 import subprocess
-import xdg
+#import xdg
 gi.require_version('Gtk','4.0')
 gi.require_version('Gdk','4.0')
 gi.require_version('Adw', '1')
@@ -30,6 +30,7 @@ from gi.repository import Gtk, Adw, Gdk, Gio
 class app():
 
     def checkValidConfig():
+        configfolder = os.environ.get("XDG_CONFIG_HOME")
         try:
             if os.path.exists(app.readConfig('Target_Path')):
                 return
@@ -37,7 +38,8 @@ class app():
                 app.setConfig('Target_Path', os.path.expanduser('~'))
         except Exception as e:
             if type(e) == FileNotFoundError:
-                with open((xdg.xdg_config_home().__str__()+'/codey.config'), "a+") as file:
+                #with open((xdg.xdg_config_home().__str__() + '/codey.config'), "a+") as file:
+                with open((configfolder + '/codey.config'), "a+") as file:
                     file.write(
                         "Target_Path: " + os.path.expanduser('~') + "\nShow Hidden Files: False\nShow PhP Files: True\nShow HTML Files: True\nShow all Files: False\nStart MariaDB Database: False")
 
@@ -91,19 +93,23 @@ class app():
 
     #writes the config
     def setConfig(setting, content):
+        configfolder = os.environ.get("XDG_CONFIG_HOME")
         allSettings = app.readConfig('allSettings')
         for settings in allSettings:
             if settings[0] == setting:
                 settings[1] = content
-        with open(xdg.xdg_config_home().__str__()+'/codey.config', 'w') as config:
+        #with open(xdg.xdg_config_home().__str__() + '/codey.config', 'w') as config:
+        with open(configfolder + '/codey.config', 'w') as config:
             for settings in allSettings:
                 config.write(': '.join(settings) + '\n')
 
 
     #reads the config
     def readConfig(setting):
+        configfolder = os.environ.get("XDG_CONFIG_HOME")
         allSettings = []
-        with open(xdg.xdg_config_home().__str__()+'/codey.config', 'r') as config:
+        #with open(xdg.xdg_config_home().__str__() + '/codey.config', 'r') as config:
+        with open(configfolder + '/codey.config', 'r') as config:
             for line in config:
                 line = line.strip().split(': ')
                 if setting == 'allSettings':
@@ -140,7 +146,7 @@ class main_window(Gtk.Window):
 
     @Gtk.Template.Callback()
     def aboutClicked(self, *args):
-        self.aboutDialog.set_logo_icon_name('codey')
+        self.aboutDialog.set_logo_icon_name("io.github.unicornyrainbow.codey")
         self.aboutDialog.show()
 
     @Gtk.Template.Callback()
