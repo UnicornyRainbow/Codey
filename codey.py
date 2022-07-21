@@ -38,7 +38,6 @@ class app():
                 app.setConfig('Target_Path', os.path.expanduser('~'))
         except Exception as e:
             if type(e) == FileNotFoundError:
-                #with open((xdg.xdg_config_home().__str__() + '/codey.config'), "a+") as file:
                 with open((configfolder + '/codey.config'), "a+") as file:
                     file.write(
                         "Target_Path: " + os.path.expanduser('~') + "\nShow Hidden Files: False\nShow PhP Files: True\nShow HTML Files: True\nShow all Files: False\nStart MariaDB Database: False")
@@ -98,7 +97,6 @@ class app():
         for settings in allSettings:
             if settings[0] == setting:
                 settings[1] = content
-        #with open(xdg.xdg_config_home().__str__() + '/codey.config', 'w') as config:
         with open(configfolder + '/codey.config', 'w') as config:
             for settings in allSettings:
                 config.write(': '.join(settings) + '\n')
@@ -108,7 +106,6 @@ class app():
     def readConfig(setting):
         configfolder = os.environ.get("XDG_CONFIG_HOME")
         allSettings = []
-        #with open(xdg.xdg_config_home().__str__() + '/codey.config', 'r') as config:
         with open(configfolder + '/codey.config', 'r') as config:
             for line in config:
                 line = line.strip().split(': ')

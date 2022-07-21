@@ -30,7 +30,7 @@
 
   <description>
     <p>
-      Display and launch various code, using the Php webserver, from a simple, Gtk 4 and Libadwaita based app.
+      Display and launch various code, using the Php webserver and automatically start and end MariaDB. All from a simple, Gtk 4 and Libadwaita based app.
     </p>
   </description>
 
@@ -47,6 +47,6 @@
   <url type="homepage">https://unicornyrainbow.github.io/Codey/</url>
 
   <releases>
-    <release version="1.0" date="2022-03-29"/>
+    <release version="1.0.0" date="2022-07-21"/>
   </releases>
 </component>

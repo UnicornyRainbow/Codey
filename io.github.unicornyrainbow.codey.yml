@@ -31,14 +31,6 @@ modules:
       - type: file
         path: LICENSE.txt
 
-add-extensions:
-  org.gnome.Platform.Compat.aarch64:
-    directory: lib/aarch64-linux-gnu
-    version: '42'
-  org.gnome.Platform.Compat.arm:
-    directory: lib/arm-linux-gnu
-    version: '42'
-
 finish-args:
   # X11 + XShm access
   - --share=ipc
@@ -51,5 +43,3 @@ finish-args:
   # For services like Webserver
   - --socket=session-bus
   - --filesystem=xdg-run/gvfsd
-
-  - --allow=multiarch

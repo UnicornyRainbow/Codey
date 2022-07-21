@@ -4,6 +4,7 @@
   <template class="main_window" parent="GtkWindow">
     <property name="default-width">960</property>
     <property name="default-height">540</property>
+    <property name="title">Codey</property>
     <signal name="destroy" handler="onDestroy" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar">
@@ -152,13 +153,14 @@
     <property name="wrap-mode">2</property>
   </object>
   <object class="GtkAboutDialog" id="aboutDialog">
-    <property name="authors">UnicornyRainbow</property>
-    <property name="artists">UnicornyRainbow</property>
+    <property name="authors">UnicornyRainbow https://unicornyrainbow.github.io/UnicornyRainbow/</property>
+    <property name="artists">UnicornyRainbow https://unicornyrainbow.github.io/UnicornyRainbow/</property>
     <property name="comments">Display and launch various code using the Php webserver.</property>
     <property name="license-type">gpl-3-0-only</property>
     <property name="program-name">Codey</property>
     <property name="version">1.0.0</property>
     <property name="website-label">Website</property>
     <property name="website">https://unicornyrainbow.github.io/Codey/</property>
+    <property name="copyright">©2021-2022 UnicornyRainbow</property>
   </object>
 </interface>
