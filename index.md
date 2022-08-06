@@ -4,9 +4,6 @@
 
 A simple application to preview and run code files, primarily intended for webdevelopment.
 
-Test
-<img src="assets/codey.png" style="border-radius: 50%"/>
-
 Codey is written in python, using Gtk4 and Libadwaita and supports automatic light and dark mode.
 It also supports automatically starting and stopping the MariaDB database, but this feature prompts the user everytime the database is started or stopped for the root password.
 It is based on Python and uses the build in Php webserver.
