@@ -8,7 +8,7 @@ Thank you for installing Codey! There are multiple ways to install it:
 The packagemanager/ packagig format used(you don't need this, if you run it directly from source and don't install it):\
 Fedora: `sudo dnf install flatpak`\
 Ubuntu: `sudo apt install flatpak`\
-Arch: `sudo pacman -S flatpak`\
+Arch: `sudo pacman -S flatpak`
 
 Then add flathub: `flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo`
 
@@ -35,7 +35,7 @@ Then open the file in your file manager and double click it, it should open your
 ### Command Line
 Download it with
 * `wget https://github.com/UnicornyRainbow/Codey/releases/latest/download/codey.flatpak` for x86
-* `wget https://github.com/UnicornyRainbow/Codey/releases/latest/download/codey_aarch.flatpak` for aarch
+* `wget https://github.com/UnicornyRainbow/Codey/releases/latest/download/codey_aarch.flatpak` for aarch\
 then install it
 * `sudo flatpak install codey.flatpak` or
 * `sudo flatpak install codey_aarch.flatpak`
