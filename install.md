@@ -18,7 +18,7 @@ Or follow the [official instructions](https://www.flatpak.org/setup/)
 PHP should already be installed, if not:\
 Fedora: `sudo dnf install php`\
 Ubuntu: `sudo apt install php`\
-Arch: `sudo pacman -S php`\
+Arch: `sudo pacman -S php`
 
 ### MariaDB (optionally)
 You only need MariaDB, if you want to use the MariaDB feature of Codey.\
