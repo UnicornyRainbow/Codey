@@ -8,14 +8,4 @@ It is based on Python and uses the build in Php webserver.
 
 ## Installation
 
-First make sure you have the following dependencies installed:
-
-* php
-* flatpak
-* mariadb server (if you want to use it)
-then install via a graphical packagemanager like Gnome Software
-or run
-
-```commandline
-./flatpak_build.sh
-```
+follow these [instructions](https://unicornyrainbow.github.io/Codey/install)
