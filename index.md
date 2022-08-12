@@ -1,14 +1,89 @@
-# Codey
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UnicornyRainbow - My Projects</title>
+  <link rel="canonical" href="https://unicornyrainbow.github.io/UnicornyRainbow/myProjects" />
+  <meta property="og:url" content="https://unicornyrainbow.github.io/UnicornyRainbow/myProjects" />
+  <meta property="og:site_name" content="UnicornyRainbow" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary" />
+  <meta property="twitter:title" content="UnicornyRainbow" />
+  <link rel="shortcut icon" type="image/png" href="assets/me.png?">
+  <link rel="stylesheet" href="/UnicornyRainbow/assets/css/style.css?v=dbb2dc5cc0b05a8b5e2579d51fdcb1bb59eca7fd">
+  <style>
+    nav ul {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background-color: #333;
+    }
 
-![codey.png](/assets/codey.png)
+    nav li {
+      float: left;
+    }
 
-A simple application to preview and run code files, primarily intended for webdevelopment.
+    nav li a {
+      display: block;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+    }
 
-Codey is written in python, using Gtk4 and Libadwaita and supports automatic light and dark mode.
-It also supports automatically starting and stopping the MariaDB database, but this feature prompts the user everytime the database is started or stopped for the root password.
-It is based on Python and uses the build in Php webserver.
+    .navbar-link {
+      padding: 14px 16px;
+    }
 
-Some important links: 
-* View the sourcecode on [Github](https://github.com/UnicornyRainbow/Codey) opr [GitLab](https://gitlab.com/UnicornyRainbow/Codey)
-* Or [install](https://UnicornyRainbow.github.io/Codey/install) Codey.
-* Take a look at my other [projects](https://UnicornyRainbow.github.io/UnicornyRainbow/myProjects)
+    /* Change the link color to #111 (black) on hover */
+    nav li a:hover {
+      background-color: #111;
+    }
+    .active {
+      background-color: #04AA6D;
+    }
+ 	</style>
+</head>
+<body>
+<nav>
+  <ul>
+    <li>
+        <a href="https://unicornyrainbow.github.io/UnicornyRainbow"><img src="assets/me.png" height="45" style="border-radius: 50%;"/></a>
+    </li>
+    <li>
+        <a class="active" class="navbar-link" href="https://unicornyrainbow.github.io/Codey">Codey</a>
+    </li>
+    <li>
+        <a class="navbar-link" href="https://unicornyrainbow.github.io/Codey/install">Installation</a>
+    </li>
+    <li>
+        <a class="navbar-link" href="https://unicornyrainbow.github.io/Organizer">Organizer</a>
+    </li>
+    <li>
+        <a class="navbar-link" href="https://unicornyrainbow.github.io/Secrets">Secrets</a>
+    </li>
+  </ul>
+</nav>
+<div class="container-lg px-3 my-5">
+  <h1 id="codey">Codey</h1>
+
+  <p><img src="/Codey/assets/codey.png" alt="codey.png" /></p>
+
+  <p>A simple application to preview and run code files, primarily intended for webdevelopment.</p>
+
+  <p>
+    Codey is written in python, using Gtk4 and Libadwaita and supports automatic light and dark mode.
+    It also supports automatically starting and stopping the MariaDB database, but this feature prompts the user everytime the database is started or stopped for the root password.
+    It is based on Python and uses the build in Php webserver.
+  </p>
+  <p>Some important links:</p>
+  <ul>
+    <li>View the sourcecode on <a href="https://github.com/UnicornyRainbow/Codey">Github</a> opr <a href="https://gitlab.com/UnicornyRainbow/Codey">GitLab</a></li>
+    <li>Or <a href="https://UnicornyRainbow.github.io/Codey/install">install</a> Codey.</li>
+    <li>Take a look at my other <a href="https://UnicornyRainbow.github.io/UnicornyRainbow/myProjects">projects</a></li>
+  </ul>
+</div>
+</body>
+</html>
