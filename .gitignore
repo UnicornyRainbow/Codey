@@ -3,7 +3,7 @@
 build
 repo
 .git
-.flatpak
+*.flatpak
 
 # Github auto generated
 
@@ -136,4 +136,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
