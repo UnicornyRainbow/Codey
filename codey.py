@@ -21,7 +21,6 @@ import os
 import gi
 import sys
 import subprocess
-#import xdg
 gi.require_version('Gtk','4.0')
 gi.require_version('Gdk','4.0')
 gi.require_version('Adw', '1')
@@ -30,7 +29,10 @@ from gi.repository import Gtk, Adw, Gdk, Gio
 class app():
 
     def checkValidConfig():
-        configfolder = os.environ.get("XDG_CONFIG_HOME")
+        if __debug__:
+            configfolder = "."
+        else:
+            configfolder = os.environ.get("XDG_CONFIG_HOME")
         try:
             if os.path.exists(app.readConfig('Target_Path')):
                 return
@@ -92,7 +94,10 @@ class app():
 
     #writes the config
     def setConfig(setting, content):
-        configfolder = os.environ.get("XDG_CONFIG_HOME")
+        if __debug__:
+            configfolder = "."
+        else:
+            configfolder = os.environ.get("XDG_CONFIG_HOME")
         allSettings = app.readConfig('allSettings')
         for settings in allSettings:
             if settings[0] == setting:
@@ -104,7 +109,10 @@ class app():
 
     #reads the config
     def readConfig(setting):
-        configfolder = os.environ.get("XDG_CONFIG_HOME")
+        if __debug__:
+            configfolder = "."
+        else:
+            configfolder = os.environ.get("XDG_CONFIG_HOME")
         allSettings = []
         with open(configfolder + '/codey.config', 'r') as config:
             for line in config:
@@ -115,8 +123,12 @@ class app():
                     return(line[1])
         return(allSettings)
 
-@Gtk.Template(filename="/app/bin/codey.ui") #for flatpak
-#@Gtk.Template(filename="codey.ui")           #for debug
+if __debug__:
+    uipath = "codey.ui"
+else:
+    uipath = "/app/bin/codey.ui"
+
+@Gtk.Template(filename=uipath)
 class main_window(Gtk.Window):
     __gtype_name__ = "main_window"
 
@@ -156,9 +168,15 @@ class main_window(Gtk.Window):
     def mariaChecked(self, widget):
         app.setConfig(widget.get_label(), str(widget.get_active()))
         if widget.get_active() == False:
-            subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'stop', 'mariadb'])
+            if __debug__:
+                subprocess.Popen(['pkexec', 'systemctl', 'stop', 'mariadb'])
+            else:
+                subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'stop', 'mariadb'])
         elif widget.get_active() == True:
-            subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'start', 'mariadb'])
+            if __debug__:
+                subprocess.Popen(['pkexec', 'systemctl', 'start', 'mariadb'])
+            else:
+                subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'start', 'mariadb'])
 
     @Gtk.Template.Callback()
     def cancelClicked(self, widget):
@@ -256,12 +274,22 @@ class MyApp(Adw.Application):
 app.checkValidConfig()
 
 #start webserver and maybe mariadb
-subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
+if __debug__:
+    subprocess.Popen(['php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
+else:
+    subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
 
 app2=MyApp(application_id='io.github.unicornyrainbow.codey')
 app2.run(sys.argv)
 
 #kill webserver and maybe mariadb
-subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
+if __debug__:
+    subprocess.Popen(['killall', '-9', 'php'])
+else:
+    subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
+
 if app.readConfig("Start MariaDB Database") == "True":
-    subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'stop', 'mariadb'])
+    if __debug__:
+        subprocess.Popen(['pkexec', 'systemctl', 'stop', 'mariadb'])
+    else:
+        subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'stop', 'mariadb'])

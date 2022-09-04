@@ -1,2 +1,2 @@
 #!/bin/sh
-python3 /app/bin/codey.py
+python3 -O /app/bin/codey.py
