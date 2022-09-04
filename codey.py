@@ -74,6 +74,7 @@ class app():
 
     #gets all the files in the current directory
     def getFiles():
+        print("testttt")
         path = app.readConfig('Target_Path')
         fileList = []
         with os.scandir(path) as dirs:
@@ -235,6 +236,7 @@ class main_window(Gtk.Window):
 
     #fills files from current directory into dropdown
     def fillSelection(self):
+        self.fileChooser.remove_all()
         files = app.getFiles()
         files.sort()
         for entry in files:
