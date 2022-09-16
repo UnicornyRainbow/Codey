@@ -21,33 +21,40 @@ import os
 import gi
 import sys
 import subprocess
-gi.require_version('Gtk','4.0')
-gi.require_version('Gdk','4.0')
+
+gi.require_version('Gtk', '4.0')
+gi.require_version('Gdk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw, Gdk, Gio
+from gi.repository import Gtk, Adw#, Gdk, Gio
 
-class app():
 
-    def checkValidConfig():
+class App():
+
+    def check_valid_config():
         if __debug__:
-            configfolder = "."
+            configfolder = "src/res"
         else:
-            configfolder = os.environ.get("XDG_CONFIG_HOME")
+            if os.path.exists(os.path.expanduser("~") + "/.config"):
+                configfolder = os.path.expanduser("~") + "/.config"
+            else:
+                configfolder = os.environ.get("XDG_CONFIG_HOME")
         try:
-            if os.path.exists(app.readConfig('Target_Path')):
+            if os.path.exists(App.read_config('Target_Path')):
                 return
             else:
-                app.setConfig('Target_Path', os.path.expanduser('~'))
+                App.set_config('Target_Path', os.path.expanduser('~'))
         except Exception as e:
             if type(e) == FileNotFoundError:
-                with open((configfolder + '/codey.config'), "a+") as file:
+                with open((configfolder + '/codey.config'), "w") as file:
                     file.write(
-                        "Target_Path: " + os.path.expanduser('~') + "\nShow Hidden Files: False\nShow PhP Files: True\nShow HTML Files: True\nShow all Files: False\nStart MariaDB Database: False")
+                        "Target_Path: " + os.path.expanduser(
+                            '~') + "\nShow Hidden Files: False\nShow PhP Files: True\nShow HTML Files: True\nShow all Files: False\nStart MariaDB Database: False")
 
-    #opens the selected file in a webbrowser
-    def openFile(file, action):
-        longpath = app.readConfig('Target_Path')
-        shortpath = '/'.join(longpath.split('/')[3:])			#gets path as string, converts it to list and deletes first 3 entrys(/home/user), puts it back together
+    # opens the selected file in a webbrowser
+    def open_file(file: str, action: str):
+        longpath = App.read_config('Target_Path')
+        shortpath = '/'.join(longpath.split('/')[
+                             3:])  # gets path as string, converts it to list and deletes first 3 entrys(/home/user), puts it back together
         if action == 'Run':
             url = 'http://localhost:9000/' + shortpath + '/' + file
             process = subprocess.Popen(['xdg-open', url])
@@ -55,82 +62,89 @@ class app():
             path = longpath + '/' + file
             process = subprocess.Popen(['xdg-open', path])
 
-    #gets the code of the given file
-    def getCode(file):
-        path = app.readConfig('Target_Path')
-        if file == None:
-            code = ''				#to avoid errors: after changing directory, the currently displayed file becomes None
+    # gets the code of the given file
+    def get_code(file: str):
+        path = App.read_config('Target_Path')
+        if file is None:
+            code = ''  # to avoid errors: after changing directory, the currently displayed file becomes None
         else:
             file = path + '/' + file
             with open(file, 'r') as contents:
                 code = contents.read()
         return code
 
-    def setCode(file, code):
-        path = app.readConfig('Target_Path')
+    def set_code(file: str, code: str):
+        path = App.read_config('Target_Path')
         file = path + "/" + file
         with open(file, 'w') as contents:
             contents.write(code)
 
-    #gets all the files in the current directory
-    def getFiles():
-        path = app.readConfig('Target_Path')
-        fileList = []
+    # gets all the files in the current directory
+    def get_files():
+        path = App.read_config('Target_Path')
+        filelist = []
         with os.scandir(path) as dirs:
             for entry in dirs:
-                if entry.is_file():					#hides folders
-                    if app.readConfig('Show all Files') == 'True':
-                        fileList.append(entry.name)
+                if entry.is_file():  # hides folders
+                    if App.read_config('Show all Files') == 'True':
+                        filelist.append(entry.name)
                     else:
-                        if entry.name.endswith('.php') and app.readConfig('Show PhP Files') == 'True':
-                            fileList.append(entry.name)
-                        elif entry.name.endswith('.html') and app.readConfig('Show HTML Files') == 'True':
-                            fileList.append(entry.name)
-        if app.readConfig('Show Hidden Files') == 'False':
-            for entry in fileList:
+                        if entry.name.endswith('.php') and App.read_config('Show PhP Files') == 'True':
+                            filelist.append(entry.name)
+                        elif entry.name.endswith('.html') and App.read_config('Show HTML Files') == 'True':
+                            filelist.append(entry.name)
+        if App.read_config('Show Hidden Files') == 'False':
+            for entry in filelist:
                 if entry.startswith('.'):
-                    fileList.remove(entry)
-        return fileList
+                    filelist.remove(entry)
+        return filelist
 
-    #writes the config
-    def setConfig(setting, content):
+    # writes the config
+    def set_config(setting: str, content: str):
         if __debug__:
-            configfolder = "."
+            configfolder = "src/res"
         else:
-            configfolder = os.environ.get("XDG_CONFIG_HOME")
-        allSettings = app.readConfig('allSettings')
-        for settings in allSettings:
+            if os.path.exists(os.path.expanduser("~") + "/.config"):
+                configfolder = os.path.expanduser("~") + "/.config"
+            else:
+                configfolder = os.environ.get("XDG_CONFIG_HOME")
+        allsettings = App.read_config('allSettings')
+        for settings in allsettings:
             if settings[0] == setting:
                 settings[1] = content
         with open(configfolder + '/codey.config', 'w') as config:
-            for settings in allSettings:
+            for settings in allsettings:
                 config.write(': '.join(settings) + '\n')
 
-
-    #reads the config
-    def readConfig(setting):
+    # reads the config
+    def read_config(setting: str):
         if __debug__:
-            configfolder = "."
+            configfolder = "src/res"
         else:
-            configfolder = os.environ.get("XDG_CONFIG_HOME")
-        allSettings = []
+            if os.path.exists(os.path.expanduser("~") + "/.config"):
+                configfolder = os.path.expanduser("~") + "/.config"
+            else:
+                configfolder = os.environ.get("XDG_CONFIG_HOME")
+        allsettings = []
         with open(configfolder + '/codey.config', 'r') as config:
             for line in config:
                 line = line.strip().split(': ')
                 if setting == 'allSettings':
-                    allSettings.append(line)
+                    allsettings.append(line)
                 elif line[0] == setting:
-                    return(line[1])
-        return(allSettings)
+                    return line[1]
+        return allsettings
+
 
 if __debug__:
-    uipath = "codey.ui"
+    uipath = "src/res/codey.ui"
 else:
     uipath = "/app/bin/codey.ui"
 
+
 @Gtk.Template(filename=uipath)
-class main_window(Gtk.Window):
-    __gtype_name__ = "main_window"
+class MainWindow(Gtk.Window):
+    __gtype_name__ = "MainWindow"
 
     mainBox = Gtk.Template.Child()
 
@@ -153,107 +167,110 @@ class main_window(Gtk.Window):
 
     aboutDialog = Gtk.Template.Child()
 
+    text = Gtk.TextBuffer()
+
     @Gtk.Template.Callback()
-    def aboutClicked(self, *args):
+    def about_clicked(self, *args):
         self.aboutDialog.set_logo_icon_name("io.github.unicornyrainbow.codey")
         self.aboutDialog.show()
 
     @Gtk.Template.Callback()
-    def onChecked(self, widget):
-        app.setConfig(widget.get_label(), str(widget.get_active()))
+    def on_checked(self, widget):
+        App.set_config(widget.get_label(), str(widget.get_active()))
         self.fileChooser.remove_all()
-        self.fillSelection()
+        self.fill_selection()
 
     @Gtk.Template.Callback()
-    def mariaChecked(self, widget):
-        app.setConfig(widget.get_label(), str(widget.get_active()))
-        if widget.get_active() == False:
+    def maria_checked(self, widget):
+        App.set_config(widget.get_label(), str(widget.get_active()))
+        if not widget.get_active():
             if __debug__:
                 subprocess.Popen(['pkexec', 'systemctl', 'stop', 'mariadb'])
             else:
                 subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'stop', 'mariadb'])
-        elif widget.get_active() == True:
+        elif widget.get_active():
             if __debug__:
                 subprocess.Popen(['pkexec', 'systemctl', 'start', 'mariadb'])
             else:
                 subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'start', 'mariadb'])
 
     @Gtk.Template.Callback()
-    def cancelClicked(self, widget):
+    def cancel_clicked(self, widget):
         self.mainBox.remove(self.mainBox.get_first_child())
         self.mainBox.prepend(self.interfaceBox)
         self.scrolledWindow.set_child(self.codeLabel)
 
     @Gtk.Template.Callback()
-    def saveClicked(self, widget):
+    def save_clicked(self, widget):
         file = self.fileChooser.get_active_text()
         code = self.text.get_text(self.text.get_start_iter(), self.text.get_end_iter(), False)
-        app.setCode(file, code)
+        App.set_code(file, code)
         self.mainBox.remove(self.mainBox.get_first_child())
         self.mainBox.prepend(self.interfaceBox)
         self.scrolledWindow.set_child(self.codeLabel)
-        self.codeLabel.set_label(app.getCode(file))
+        self.codeLabel.set_label(App.get_code(file))
 
-    #make File editable
+    # make File editable
     @Gtk.Template.Callback()
-    def editClicked(self, widget):
+    def edit_clicked(self, widget):
         self.scrolledWindow.set_child(self.codeEditor)
         file = self.fileChooser.get_active_text()
-        self.text = Gtk.TextBuffer()
-        self.text.set_text(app.getCode(file))
+        self.text.set_text(App.get_code(file))
         self.codeEditor.set_buffer(self.text)
         self.mainBox.remove(self.mainBox.get_first_child())
         self.mainBox.prepend(self.interfaceEditBox)
 
-    #opens dialog to choose folder to look in
+    # opens dialog to choose folder to look in
     @Gtk.Template.Callback()
-    def folderClicked(self, widget):
+    def folder_clicked(self, widget):
         dialog = Gtk.FileChooserDialog(title='Select a Folder', action=Gtk.FileChooserAction.SELECT_FOLDER)
         dialog.set_transient_for(self)
         dialog.add_buttons('Cancel', Gtk.ResponseType.CANCEL, 'Open', Gtk.ResponseType.OK)
         dialog.connect('response', self.on_dialog_response)
         dialog.show()
 
-    #updates the code segment when file is changed
+    # updates the code segment when file is changed
     @Gtk.Template.Callback()
-    def fileChanged(self, widget):
+    def file_changed(self, widget):
         file = widget.get_active_text()
-        self.codeLabel.set_label(app.getCode(file))
+        self.codeLabel.set_label(App.get_code(file))
 
-    #submits the filechoice
+    # submits the filechoice
     @Gtk.Template.Callback()
-    def submitClicked(self, widget):
+    def submit_clicked(self, widget):
         file = self.fileChooser.get_active_text()
-        app.openFile(file, widget.get_label())
+        App.open_file(file, widget.get_label())
 
-    def setCheckButton(self, name):
-        setting = app.readConfig(name)
+    @staticmethod
+    def set_check_button(name: str):
+        setting = App.read_config(name)
         if setting == 'True':
             return True
         else:
             return False
 
-    #fills files from current directory into dropdown
-    def fillSelection(self):
+    # fills files from current directory into dropdown
+    def fill_selection(self):
         self.fileChooser.remove_all()
-        files = app.getFiles()
+        files = App.get_files()
         files.sort()
         for entry in files:
             self.fileChooser.append_text(entry)
 
     def on_dialog_response(self, widget, response_id):
         if response_id == Gtk.ResponseType.OK:
-            app.setConfig('Target_Path', widget.get_file().get_path())
-        self.fileChooser.remove_all()					#removes all old file entries in dropdown
-        self.fillSelection()							#gets new entries for dropdown
+            App.set_config('Target_Path', widget.get_file().get_path())
+        self.fileChooser.remove_all()  # removes all old file entries in dropdown
+        self.fill_selection()  # gets new entries for dropdown
         widget.destroy()
 
     def do_activate(self):
-        self.showAll.set_active(self.setCheckButton(self.showAll.get_label()))
-        self.showHtml.set_active(self.setCheckButton(self.showHtml.get_label()))
-        self.showPhp.set_active(self.setCheckButton(self.showPhp.get_label()))
-        self.showHidden.set_active(self.setCheckButton(self.showHidden.get_label()))
-        self.maria.set_active(self.setCheckButton(self.maria.get_label()))
+        self.showAll.set_active(self.set_check_button(self.showAll.get_label()))
+        self.showHtml.set_active(self.set_check_button(self.showHtml.get_label()))
+        self.showPhp.set_active(self.set_check_button(self.showPhp.get_label()))
+        self.showHidden.set_active(self.set_check_button(self.showHidden.get_label()))
+        self.maria.set_active(self.set_check_button(self.maria.get_label()))
+
 
 class MyApp(Adw.Application):
     def __init__(self, **kwargs):
@@ -261,35 +278,35 @@ class MyApp(Adw.Application):
         self.connect('activate', self.on_activate)
 
     def on_activate(self, app):
-        window = main_window(application = self)
+        window = MainWindow(application=self)
 
         window.mainBox.remove(window.mainBox.get_first_child())
         window.popover.set_child(window.popoverBox)
         window.do_activate()
         window.mainBox.remove(window.mainBox.get_first_child())
-        window.fillSelection()
+        window.fill_selection()
 
         window.present()
 
 
-app.checkValidConfig()
+App.check_valid_config()
 
-#start webserver and maybe mariadb
+# start webserver and maybe mariadb
 if __debug__:
     subprocess.Popen(['php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
 else:
     subprocess.Popen(['flatpak-spawn', '--host', 'php', '-S', '0.0.0.0:9000', '-t', os.path.expanduser('~')])
 
-app2=MyApp(application_id='io.github.unicornyrainbow.codey')
-app2.run(sys.argv)
+app = MyApp(application_id='io.github.unicornyrainbow.codey')
+app.run(sys.argv)
 
-#kill webserver and maybe mariadb
+# kill webserver and maybe mariadb
 if __debug__:
     subprocess.Popen(['killall', '-9', 'php'])
 else:
     subprocess.Popen(['flatpak-spawn', '--host', 'killall', '-9', 'php'])
 
-if app.readConfig("Start MariaDB Database") == "True":
+if App.read_config("Start MariaDB Database") == "True":
     if __debug__:
         subprocess.Popen(['pkexec', 'systemctl', 'stop', 'mariadb'])
     else:

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 4.0 -->
-  <template class="main_window" parent="GtkWindow">
+  <template class="MainWindow" parent="GtkWindow">
     <property name="default-width">960</property>
     <property name="default-height">540</property>
     <property name="title">Codey</property>
-    <signal name="destroy" handler="onDestroy" swapped="no"/>
+    <signal name="destroy" handler="on_destroy" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar">
         <child type="start">
           <object class="GtkButton">
             <property name="icon-name">folder-open-symbolic</property>
-            <signal name="clicked" handler="folderClicked"/>
+            <signal name="clicked" handler="folder_clicked"/>
           </object>
         </child>
         <child type="title">
@@ -43,38 +43,38 @@
             <child>
               <object class="GtkCheckButton" id="showAll">
                 <property name="label">Show all Files</property>
-                <signal name="toggled" handler="onChecked"/>
+                <signal name="toggled" handler="on_checked"/>
               </object>
             </child>
             <child>
               <object class="GtkCheckButton" id="showHtml">
                 <property name="label">Show HTML Files</property>
-                <signal name="toggled" handler="onChecked"/>
+                <signal name="toggled" handler="on_checked"/>
               </object>
             </child>
             <child>
               <object class="GtkCheckButton" id="showPhp">
                 <property name="label">Show PhP Files</property>
-                <signal name="toggled" handler="onChecked"/>
+                <signal name="toggled" handler="on_checked"/>
               </object>
             </child>
             <child>
               <object class="GtkCheckButton" id="showHidden">
                 <property name="label">Show Hidden Files</property>
-                <signal name="toggled" handler="onChecked"/>
+                <signal name="toggled" handler="on_checked"/>
               </object>
             </child>
             <child>
               <object class="GtkCheckButton" id="maria">
                 <property name="label">Start MariaDB Database</property>
-                <signal name="toggled" handler="mariaChecked"/>
+                <signal name="toggled" handler="maria_checked"/>
               </object>
             </child>
             <child>
               <object class="GtkButton">
                 <property name="label">About</property>
                 <property name="has-frame">False</property>
-                <signal name="clicked" handler="aboutClicked"/>
+                <signal name="clicked" handler="about_clicked"/>
               </object>
             </child>
           </object>
@@ -86,13 +86,13 @@
             <child>
               <object class="GtkButton">
                 <property name="label">Save</property>
-                <signal name="clicked" handler="saveClicked"/>
+                <signal name="clicked" handler="save_clicked"/>
               </object>
             </child>
             <child>
               <object class="GtkButton">
                 <property name="label">Cancel</property>
-                <signal name="clicked" handler="cancelClicked"/>
+                <signal name="clicked" handler="cancel_clicked"/>
               </object>
             </child>
           </object>
@@ -103,25 +103,25 @@
             <property name="spacing">10</property>
             <child>
               <object class="GtkComboBoxText" id="fileChooser">
-                <signal name="changed" handler="fileChanged"/>
+                <signal name="changed" handler="file_changed"/>
               </object>
             </child>
             <child>
               <object class="GtkButton">
                 <property name="label">Run</property>
-                <signal name="clicked" handler="submitClicked"/>
+                <signal name="clicked" handler="submit_clicked"/>
               </object>
             </child>
             <child>
               <object class="GtkButton">
                 <property name="label">Open</property>
-                <signal name="clicked" handler="submitClicked"/>
+                <signal name="clicked" handler="submit_clicked"/>
               </object>
             </child>
             <child>
               <object class="GtkButton">
                 <property name="label">Edit</property>
-                <signal name="clicked" handler="editClicked"/>
+                <signal name="clicked" handler="edit_clicked"/>
               </object>
             </child>
           </object>
