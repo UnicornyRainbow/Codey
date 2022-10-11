@@ -23,21 +23,21 @@ import sys
 import subprocess
 
 gi.require_version('Gtk', '4.0')
-gi.require_version('Gdk', '4.0')
 gi.require_version('Adw', '1')
-from gi.repository import Gtk, Adw#, Gdk, Gio
+
+from gi.repository import Gtk, Adw
 
 
-class App():
+class App:
 
     def check_valid_config():
         if __debug__:
-            configfolder = "src/res"
+            configfolder: str = "src/res"
         else:
             if os.path.exists(os.path.expanduser("~") + "/.config"):
-                configfolder = os.path.expanduser("~") + "/.config"
+                configfolder: str = os.path.expanduser("~") + "/.config"
             else:
-                configfolder = os.environ.get("XDG_CONFIG_HOME")
+                configfolder: str = os.environ.get("XDG_CONFIG_HOME")
         try:
             if os.path.exists(App.read_config('Target_Path')):
                 return
@@ -47,16 +47,20 @@ class App():
             if type(e) == FileNotFoundError:
                 with open((configfolder + '/codey.config'), "w") as file:
                     file.write(
-                        "Target_Path: " + os.path.expanduser(
-                            '~') + "\nShow Hidden Files: False\nShow PhP Files: True\nShow HTML Files: True\nShow all Files: False\nStart MariaDB Database: False")
+                        "Target_Path: " + os.path.expanduser('~') +
+                        "\nShow Hidden Files: False"
+                        "\nShow PhP Files: True"
+                        "\nShow HTML Files: True"
+                        "\nShow all Files: False"
+                        "\nStart MariaDB Database: False")
 
     # opens the selected file in a webbrowser
     def open_file(file: str, action: str):
-        longpath = App.read_config('Target_Path')
-        shortpath = '/'.join(longpath.split('/')[
+        longpath: str = App.read_config('Target_Path')
+        shortpath: str = '/'.join(longpath.split('/')[
                              3:])  # gets path as string, converts it to list and deletes first 3 entrys(/home/user), puts it back together
         if action == 'Run':
-            url = 'http://localhost:9000/' + shortpath + '/' + file
+            url: str = 'http://localhost:9000/' + shortpath + '/' + file
             process = subprocess.Popen(['xdg-open', url])
         elif action == 'Open':
             path = longpath + '/' + file
@@ -66,23 +70,23 @@ class App():
     def get_code(file: str):
         path = App.read_config('Target_Path')
         if file is None:
-            code = ''  # to avoid errors: after changing directory, the currently displayed file becomes None
+            code: str = ''  # to avoid errors: after changing directory, the currently displayed file becomes None
         else:
-            file = path + '/' + file
-            with open(file, 'r') as contents:
-                code = contents.read()
+            filepath: str = path + '/' + file
+            with open(filepath, 'r') as contents:
+                code: str = contents.read()
         return code
 
     def set_code(file: str, code: str):
-        path = App.read_config('Target_Path')
-        file = path + "/" + file
-        with open(file, 'w') as contents:
+        path: str = App.read_config('Target_Path')
+        filepath: str = path + "/" + file
+        with open(filepath, 'w') as contents:
             contents.write(code)
 
     # gets all the files in the current directory
     def get_files():
-        path = App.read_config('Target_Path')
-        filelist = []
+        path: str = App.read_config('Target_Path')
+        filelist: list[str] = []
         with os.scandir(path) as dirs:
             for entry in dirs:
                 if entry.is_file():  # hides folders
@@ -105,10 +109,10 @@ class App():
             configfolder = "src/res"
         else:
             if os.path.exists(os.path.expanduser("~") + "/.config"):
-                configfolder = os.path.expanduser("~") + "/.config"
+                configfolder: str = os.path.expanduser("~") + "/.config"
             else:
-                configfolder = os.environ.get("XDG_CONFIG_HOME")
-        allsettings = App.read_config('allSettings')
+                configfolder: str = os.environ.get("XDG_CONFIG_HOME")
+        allsettings: list[str] = App.read_config('allSettings')
         for settings in allsettings:
             if settings[0] == setting:
                 settings[1] = content
@@ -119,13 +123,13 @@ class App():
     # reads the config
     def read_config(setting: str):
         if __debug__:
-            configfolder = "src/res"
+            configfolder: str = "src/res"
         else:
             if os.path.exists(os.path.expanduser("~") + "/.config"):
-                configfolder = os.path.expanduser("~") + "/.config"
+                configfolder: str = os.path.expanduser("~") + "/.config"
             else:
-                configfolder = os.environ.get("XDG_CONFIG_HOME")
-        allsettings = []
+                configfolder: str = os.environ.get("XDG_CONFIG_HOME")
+        allsettings: list[str] = []
         with open(configfolder + '/codey.config', 'r') as config:
             for line in config:
                 line = line.strip().split(': ')
@@ -137,9 +141,9 @@ class App():
 
 
 if __debug__:
-    uipath = "src/res/codey.ui"
+    uipath: str = "src/res/codey.ui"
 else:
-    uipath = "/app/bin/codey.ui"
+    uipath: str = "/app/bin/codey.ui"
 
 
 @Gtk.Template(filename=uipath)
@@ -175,13 +179,13 @@ class MainWindow(Gtk.Window):
         self.aboutDialog.show()
 
     @Gtk.Template.Callback()
-    def on_checked(self, widget):
+    def on_checked(self, widget: gi.repository.Gtk.CheckButton):
         App.set_config(widget.get_label(), str(widget.get_active()))
         self.fileChooser.remove_all()
         self.fill_selection()
 
     @Gtk.Template.Callback()
-    def maria_checked(self, widget):
+    def maria_checked(self, widget: gi.repository.Gtk.CheckButton):
         App.set_config(widget.get_label(), str(widget.get_active()))
         if not widget.get_active():
             if __debug__:
@@ -195,15 +199,15 @@ class MainWindow(Gtk.Window):
                 subprocess.Popen(['flatpak-spawn', '--host', 'pkexec', 'systemctl', 'start', 'mariadb'])
 
     @Gtk.Template.Callback()
-    def cancel_clicked(self, widget):
+    def cancel_clicked(self, widget: gi.repository.Gtk.Button):
         self.mainBox.remove(self.mainBox.get_first_child())
         self.mainBox.prepend(self.interfaceBox)
         self.scrolledWindow.set_child(self.codeLabel)
 
     @Gtk.Template.Callback()
-    def save_clicked(self, widget):
-        file = self.fileChooser.get_active_text()
-        code = self.text.get_text(self.text.get_start_iter(), self.text.get_end_iter(), False)
+    def save_clicked(self, widget: gi.repository.Gtk.Button):
+        file: str = self.fileChooser.get_active_text()
+        code: str = self.text.get_text(self.text.get_start_iter(), self.text.get_end_iter(), False)
         App.set_code(file, code)
         self.mainBox.remove(self.mainBox.get_first_child())
         self.mainBox.prepend(self.interfaceBox)
@@ -212,9 +216,9 @@ class MainWindow(Gtk.Window):
 
     # make File editable
     @Gtk.Template.Callback()
-    def edit_clicked(self, widget):
+    def edit_clicked(self, widget: gi.repository.Gtk.Button):
         self.scrolledWindow.set_child(self.codeEditor)
-        file = self.fileChooser.get_active_text()
+        file: str = self.fileChooser.get_active_text()
         self.text.set_text(App.get_code(file))
         self.codeEditor.set_buffer(self.text)
         self.mainBox.remove(self.mainBox.get_first_child())
@@ -222,8 +226,8 @@ class MainWindow(Gtk.Window):
 
     # opens dialog to choose folder to look in
     @Gtk.Template.Callback()
-    def folder_clicked(self, widget):
-        dialog = Gtk.FileChooserDialog(title='Select a Folder', action=Gtk.FileChooserAction.SELECT_FOLDER)
+    def folder_clicked(self, widget: gi.repository.Gtk.Button):
+        dialog: gi.repository.Gtk.FileChooserDialog = Gtk.FileChooserDialog(title='Select a Folder', action=Gtk.FileChooserAction.SELECT_FOLDER)
         dialog.set_transient_for(self)
         dialog.add_buttons('Cancel', Gtk.ResponseType.CANCEL, 'Open', Gtk.ResponseType.OK)
         dialog.connect('response', self.on_dialog_response)
@@ -231,19 +235,19 @@ class MainWindow(Gtk.Window):
 
     # updates the code segment when file is changed
     @Gtk.Template.Callback()
-    def file_changed(self, widget):
-        file = widget.get_active_text()
+    def file_changed(self, widget: gi.repository.Gtk.ComboBoxText):
+        file: str = widget.get_active_text()
         self.codeLabel.set_label(App.get_code(file))
 
-    # submits the filechoice
+    # submits the file choice
     @Gtk.Template.Callback()
-    def submit_clicked(self, widget):
-        file = self.fileChooser.get_active_text()
+    def submit_clicked(self, widget: gi.repository.Gtk.Button):
+        file: str = self.fileChooser.get_active_text()
         App.open_file(file, widget.get_label())
 
     @staticmethod
     def set_check_button(name: str):
-        setting = App.read_config(name)
+        setting: str = App.read_config(name)
         if setting == 'True':
             return True
         else:
@@ -252,12 +256,12 @@ class MainWindow(Gtk.Window):
     # fills files from current directory into dropdown
     def fill_selection(self):
         self.fileChooser.remove_all()
-        files = App.get_files()
+        files: list[str] = App.get_files()
         files.sort()
         for entry in files:
             self.fileChooser.append_text(entry)
 
-    def on_dialog_response(self, widget, response_id):
+    def on_dialog_response(self, widget: gi.repository.Gtk.FileChooserDialog, response_id: gi.repository.Gtk.ResponseType):
         if response_id == Gtk.ResponseType.OK:
             App.set_config('Target_Path', widget.get_file().get_path())
         self.fileChooser.remove_all()  # removes all old file entries in dropdown

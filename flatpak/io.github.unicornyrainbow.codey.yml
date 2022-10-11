@@ -11,6 +11,7 @@ modules:
       - install -D run.sh /app/bin/run.sh
       - install -D codey.py /app/bin/codey.py
       - install -D codey.ui /app/bin/codey.ui
+      - install -D LICENSE.txt /app/bin/LICENSE.txt
       - install -D io.github.unicornyrainbow.codey.desktop /app/share/applications/io.github.unicornyrainbow.codey.desktop
       - install -D io.github.unicornyrainbow.codey.appdata.xml /app/share/metainfo/io.github.unicornyrainbow.codey.appdata.xml
       - install -D io.github.unicornyrainbow.codey.svg /app/share/icons/io.github.unicornyrainbow.codey.svg
@@ -27,6 +28,8 @@ modules:
         path: io.github.unicornyrainbow.codey.appdata.xml
       - type: file
         path: ../src/res/io.github.unicornyrainbow.codey.svg
+      - type: file
+        path: ../LICENSE.txt
 
 finish-args:
   # X11 + XShm access
