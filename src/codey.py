@@ -34,10 +34,7 @@ class App:
         if __debug__:
             configfolder: str = "src/res"
         else:
-            if os.path.exists(os.path.expanduser("~") + "/.config"):
-                configfolder: str = os.path.expanduser("~") + "/.config"
-            else:
-                configfolder: str = os.environ.get("XDG_CONFIG_HOME")
+            configfolder: str = os.environ.get("XDG_CONFIG_HOME")
         try:
             if os.path.exists(App.read_config('Target_Path')):
                 return
@@ -108,10 +105,7 @@ class App:
         if __debug__:
             configfolder = "src/res"
         else:
-            if os.path.exists(os.path.expanduser("~") + "/.config"):
-                configfolder: str = os.path.expanduser("~") + "/.config"
-            else:
-                configfolder: str = os.environ.get("XDG_CONFIG_HOME")
+            configfolder: str = os.environ.get("XDG_CONFIG_HOME")
         allsettings: list[str] = App.read_config('allSettings')
         for settings in allsettings:
             if settings[0] == setting:
@@ -125,10 +119,7 @@ class App:
         if __debug__:
             configfolder: str = "src/res"
         else:
-            if os.path.exists(os.path.expanduser("~") + "/.config"):
-                configfolder: str = os.path.expanduser("~") + "/.config"
-            else:
-                configfolder: str = os.environ.get("XDG_CONFIG_HOME")
+            configfolder: str = os.environ.get("XDG_CONFIG_HOME")
         allsettings: list[str] = []
         with open(configfolder + '/codey.config', 'r') as config:
             for line in config:
